@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import GeneralTable from '../general-table/GeneralTable';
 import Login from '../login/Login';
 import { fetchTeams } from '../../api/api-teams';
+import AddTeam from '../teams/add-team/AddTeam';
 
 const HomePage: React.FC = () => {
     const [teams, setTeams] = useState([]);
@@ -18,19 +19,18 @@ const HomePage: React.FC = () => {
         }
     }, []);
 
-    // Pobieranie danych drużyn
-    useEffect(() => {
-        const loadTeams = async () => {
-            try {
-                const data = await fetchTeams();
-                setTeams(data);
-            } catch (error) {
-                console.error('Błąd pobierania drużyn:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const loadTeams = async () => {
+        try {
+            const data = await fetchTeams();
+            setTeams(data);
+        } catch (error) {
+            console.error('Błąd pobierania drużyn:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         loadTeams();
     }, []);
 
@@ -48,21 +48,21 @@ const HomePage: React.FC = () => {
                         Wyloguj się
                     </button>
                 ) : (
-                    <button className="login-button" onClick={() => toggleModal(true)}>
+                    <button className="login-button" onClick={() => alert('Przejdź do logowania')}>
                         Zaloguj się
                     </button>
                 )}
             </header>
 
             <main>
-                {isAuthenticated ? (
-                    loading ? (
-                        <p>Ładowanie tabeli wyników...</p>
-                    ) : (
-                        <GeneralTable teams={teams} />
-                    )
+                {loading ? (
+                    <p>Ładowanie tabeli wyników...</p>
                 ) : (
-                    <Login isModalOpen={isModalOpen} toggleModal={toggleModal} />
+                    <>
+                        <GeneralTable teams={teams} />
+                        {isAuthenticated && <AddTeam onTeamAdded={loadTeams} />}
+                        {!isAuthenticated && <Login isModalOpen={isModalOpen} toggleModal={toggleModal} />}
+                    </>
                 )}
             </main>
         </div>

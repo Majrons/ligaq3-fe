@@ -1,17 +1,37 @@
-import React from 'react';
-import styles from './AddTeam.module.scss';
+import React, { useState } from 'react';
+import { addTeam } from '../../../api/api-teams';
 
-const AddTeam: React.FC = () => {
+interface AddTeamProps {
+    onTeamAdded: () => void;
+}
+
+const AddTeam: React.FC<AddTeamProps> = ({ onTeamAdded }) => {
+    const [teamName, setTeamName] = useState('');
+
+    const handleAddTeam = async () => {
+        if (teamName.trim() === '') {
+            alert('Nazwa drużyny nie może być pusta.');
+            return;
+        }
+
+        try {
+            await addTeam(teamName);
+            setTeamName('');
+            onTeamAdded(); // Odświeżenie listy drużyn po dodaniu
+        } catch (error) {
+            console.error('Błąd podczas dodawania drużyny:', error);
+        }
+    };
+
     return (
-        <div className={styles.addTeam}>
-            <h2>Dodaj Drużynę</h2>
-            <form>
-                <label>
-                    Nazwa Drużyny:
-                    <input type="text" placeholder="Wprowadź nazwę drużyny" />
-                </label>
-                <button type="submit">Dodaj Drużynę</button>
-            </form>
+        <div className="add-team">
+            <input
+                type="text"
+                placeholder="Nazwa drużyny"
+                value={teamName}
+                onChange={e => setTeamName(e.target.value)}
+            />
+            <button onClick={handleAddTeam}>Dodaj drużynę</button>
         </div>
     );
 };
