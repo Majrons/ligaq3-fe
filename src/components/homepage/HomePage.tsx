@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styles from './HomaPage.module.scss';
 import GeneralTable from '../general-table/GeneralTable';
 import Login from '../login/Login';
 import { fetchTeams } from '../../api/api-teams';
@@ -35,12 +36,12 @@ const HomePage: React.FC = () => {
     }, []);
 
     return (
-        <div className="main-page">
-            <header className="main-header">
-                <h1>Liga Rozgrywek</h1>
+        <div className={styles.homepage}>
+            <header className={styles.homepageHeader}>
+                <h1>Liga Rozgrywek Kwartalnych</h1>
                 {isAuthenticated ? (
                     <button
-                        className="logout-button"
+                        className={styles.homepageLoginButton}
                         onClick={() => {
                             localStorage.removeItem('token');
                             setIsAuthenticated(false);
@@ -48,7 +49,7 @@ const HomePage: React.FC = () => {
                         Wyloguj się
                     </button>
                 ) : (
-                    <button className="login-button" onClick={() => alert('Przejdź do logowania')}>
+                    <button className={styles.homepageLoginButton} onClick={() => toggleModal(true)}>
                         Zaloguj się
                     </button>
                 )}
