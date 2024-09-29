@@ -1,0 +1,23 @@
+@import './mixins.scss';
+@import './variables.scss';
+
+.grid {
+    max-width: $grid-max-width;
+    margin-right: auto;
+    margin-left: auto;
+
+    @include bp(l-hd) {
+        max-width: $screen-hd;
+    }
+}
+
+.grid {
+    width: 100%;
+    padding-right: $gutter-width;
+    padding-left: $gutter-width;
+
+    @include bp(xxxl) {
+        padding-right: clamp($gutter-width, 4vw, $container-gutter);
+        padding-left: clamp($gutter-width, 4vw, $container-gutter);
+    }
+}

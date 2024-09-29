@@ -1,26 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styles from './App.module.scss';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import HomePage from '../src/components/homepage/HomePage';
+import AddTeam from '../src/components/teams/add-team/AddTeam';
+import classnames from 'classnames';
+// import EditTeam from '@/components/teams/add-team/EditTeam';
+// import ResultsTable from '@/components/general-table/ResultsTable';
+
+const App: React.FC = () => {
+    return (
+        <div className={classnames('grid', styles.container)}>
+            <header>
+                <h1>Liga Rozgrywek Kwartalnych</h1>
+            </header>
+
+            <main>
+                <HomePage />
+                <AddTeam />
+                {/*<EditTeam />*/}
+                {/*<ResultsTable />*/}
+            </main>
+        </div>
+    );
+};
 
 export default App;

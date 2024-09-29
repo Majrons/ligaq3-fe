@@ -1,0 +1,47 @@
+$base: 16;
+$columns: 12;
+$container-gutter: 10rem;
+$min-container-gutter: 3.75rem;
+$gutter-width: 1.875rem;
+$gutter-width-large: 4.085rem;
+$negative-gutter: calc(($gutter-width * 0.5) * -1);
+$negative-quarter-gutter: calc(($gutter-width * 0.25) * -1);
+$negative-double-gutter: calc(($gutter-width) * -1);
+$half-gutter-width: calc(($gutter-width * 0.5));
+$negative-half-gutter-width: calc(($gutter-width * 0.5) * -1);
+$quarter-gutter-width: calc(($gutter-width * 0.25));
+$negative-quarter-gutter-width: calc(($gutter-width * 0.25 * -1));
+$max-full-hd-width: 120rem;
+$grid-max-width: 115rem;
+
+$small-s: 20; /* 320px */
+$s: 25.875; /* 414px */
+$s-max: 47.9375; /* 767px */
+$m: 48; /* 768px */
+$m-max: 74.9375; /* 1199px */
+$l: 75; /* 1200px */
+$l-max: 85.3125; /* 1365px */
+$xl: 85.375; /* 1366px */
+$xl-max: 89.9375; /* 1439px */
+$xxl: 90; /* 1440px */
+$xxl-max: 99.9375; /* 1599px */
+$xxxl: 100; /* 1600px */
+$xxxl-max: 119.9375; /* 1919px */
+$hd: 120; /* 1920px */
+$l-hd: 125;
+
+$screen-xs: $small-s * 1rem; /* 320px */
+$screen-s: $s * 1rem; /* 414px */
+$screen-s-max: $s-max * 1rem; /* 767px */
+$screen-m: $m * 1rem; /* 768px */
+$screen-m-max: $m-max * 1rem; /* 1199px */
+$screen-l: $l * 1rem; /* 1200px */
+$screen-l-max: $l-max * 1rem; /* 1365px */
+$screen-xl: $xl * 1rem; /* 1366px */
+$screen-xl-max: $xl-max * 1rem; /* 1439px */
+$screen-xxl: $xxl * 1rem; /* 1440px */
+$screen-xxl-max: $xxl-max * 1rem; /* 1599px */
+$screen-xxxl: $xxxl * 1rem; /* 1600px */
+$screen-xxxl-max: $xxxl-max * 1rem; /* 1919px */
+$screen-hd: $hd * 1rem; /* 1920px */
+$screen-l-hd: $l-hd * 1rem; /* 2000px */
