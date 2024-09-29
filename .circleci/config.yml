@@ -1,0 +1,41 @@
+version: 2.1
+
+jobs:
+  build-prod:
+    docker:
+      - image: circleci/node:14.16.0
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "wZOB6T82Um0GO9fKKncHPEC2cEZlMqRLhA5Wdr6FBsw"
+      - restore_cache:
+          keys:
+            - npm-packages-{{ checksum "package-lock.json" }}
+            - npm-packages-
+      - run:
+          name: Install dependencies
+          command: |
+            npm i
+      - save_cache:
+          key: npm-packages-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+      - run:
+          name: Build and upload application
+          command: |
+            npm run build
+            scp -r -o StrictHostKeyChecking=no -i "${SSH_KEY_PATH}" build/* ${MYDEVIL_USER}@${MYDEVIL_HOST}:/home/${MYDEVIL_USER}/domains/liga-q3.pl/public_nodejs/public
+    environment:
+      MYDEVIL_USER: webartstudio
+      MYDEVIL_HOST: s49.mydevil.net
+      SSH_KEY_PATH: ~/.ssh/id_rsa
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build-prod:
+          filters:
+            branches:
+              only: main
