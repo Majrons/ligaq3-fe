@@ -1,5 +1,5 @@
 // src/api/teamsApi.ts
-import axiosInstance from './axioxConfig';
+import axiosInstance from './axiosConfig';
 
 export const fetchTeam = async (teamId: string) => {
     const response = await axiosInstance.get(`/teams/${teamId}`);
