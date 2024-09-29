@@ -1,37 +1,70 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import styles from './HomaPage.module.scss';
 import GeneralTable from '../general-table/GeneralTable';
+import Login from '../login/Login';
+import { fetchTeams } from '../../api/api-teams';
 
 const HomePage: React.FC = () => {
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [isModalOpen, setModalOpen] = useState<boolean>(false);
+
+    const toggleModal = (modalState: boolean) => setModalOpen(modalState);
 
     useEffect(() => {
-        const fetchTeams = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            setIsAuthenticated(true);
+        }
+    }, []);
+
+    // Pobieranie danych drużyn
+    useEffect(() => {
+        const loadTeams = async () => {
             try {
-                const response = await axios.get('/api/teams'); // Endpoint do pobrania drużyn
-                setTeams(response.data);
+                const data = await fetchTeams();
+                setTeams(data);
             } catch (error) {
-                console.error('Błąd pobierania danych:', error);
+                console.error('Błąd pobierania drużyn:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchTeams();
+        loadTeams();
     }, []);
 
     return (
-        <div className={styles.homepage}>
+        <div className="main-page">
             <header className="main-header">
                 <h1>Liga Rozgrywek</h1>
-                <button className="login-button" onClick={() => alert('Przejdź do logowania')}>
-                    Zaloguj się
-                </button>
+                {isAuthenticated ? (
+                    <button
+                        className="logout-button"
+                        onClick={() => {
+                            localStorage.removeItem('token');
+                            setIsAuthenticated(false);
+                        }}>
+                        Wyloguj się
+                    </button>
+                ) : (
+                    <button className="login-button" onClick={() => toggleModal(true)}>
+                        Zaloguj się
+                    </button>
+                )}
             </header>
 
-            <main>{loading ? <p>Ładowanie tabeli wyników...</p> : <GeneralTable teams={teams} />}</main>
+            <main>
+                {isAuthenticated ? (
+                    loading ? (
+                        <p>Ładowanie tabeli wyników...</p>
+                    ) : (
+                        <GeneralTable teams={teams} />
+                    )
+                ) : (
+                    <Login isModalOpen={isModalOpen} toggleModal={toggleModal} />
+                )}
+            </main>
         </div>
     );
 };
