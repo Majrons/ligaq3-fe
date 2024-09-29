@@ -4,13 +4,6 @@ $container-gutter: 10rem;
 $min-container-gutter: 3.75rem;
 $gutter-width: 1.875rem;
 $gutter-width-large: 4.085rem;
-$negative-gutter: calc(($gutter-width * 0.5) * -1);
-$negative-quarter-gutter: calc(($gutter-width * 0.25) * -1);
-$negative-double-gutter: calc(($gutter-width) * -1);
-$half-gutter-width: calc(($gutter-width * 0.5));
-$negative-half-gutter-width: calc(($gutter-width * 0.5) * -1);
-$quarter-gutter-width: calc(($gutter-width * 0.25));
-$negative-quarter-gutter-width: calc(($gutter-width * 0.25 * -1));
 $max-full-hd-width: 120rem;
 $grid-max-width: 115rem;
 
