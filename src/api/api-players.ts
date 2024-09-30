@@ -12,7 +12,7 @@ export const fetchPlayersByTeam = async (teamId: string) => {
 };
 
 // Dodaj nowego gracza
-export const addPlayerToTeam = async (teamId: string, playerName: string) => {
+export const addPlayerToTeam = async (playerName: string, teamId: string) => {
     try {
         const response = await axiosInstance.post('/players', { name: playerName, teamId });
         return response.data;

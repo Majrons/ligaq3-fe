@@ -35,7 +35,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
         const fetchAllTeams = async () => {
             try {
                 const response = await fetchTeams();
-                setTeams(response.data);
+                setTeams(response);
             } catch (error) {
                 console.error('Nie udało się pobrać drużyn', error);
             }
@@ -49,7 +49,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
         const fetchPlayers = async (teamId: string) => {
             try {
                 const response = await fetchPlayersByTeam(teamId);
-                return response.data;
+                return response;
             } catch (error) {
                 console.error('Nie udało się pobrać graczy', error);
                 return [];
