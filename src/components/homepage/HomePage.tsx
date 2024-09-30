@@ -5,6 +5,7 @@ import Login from '../login/Login';
 import { fetchTeams } from '../../api/api-teams';
 import AddTeam from '../teams/add-team/AddTeam';
 import AddMatch from '../../components/matches/add-match/AddMatch';
+import MatchList from '../matches/match-list/MatchList';
 
 const HomePage: React.FC = () => {
     const [teams, setTeams] = useState([]);
@@ -12,9 +13,11 @@ const HomePage: React.FC = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isLoginModalOpen, setLoginModalOpen] = useState<boolean>(false);
     const [isAddMatchModalOpen, setAddMatchModalOpen] = useState<boolean>(false);
+    const [isEditMatchModalOpen, setEditMatchModalOpen] = useState<boolean>(false);
 
     const toggleLoginModal = (modalState: boolean) => setLoginModalOpen(modalState);
     const toggleAddMatchModal = (modalState: boolean) => setAddMatchModalOpen(modalState);
+    const toggleEditMatchModal = (modalState: boolean) => setEditMatchModalOpen(modalState);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -67,6 +70,11 @@ const HomePage: React.FC = () => {
                 ) : (
                     <>
                         <GeneralTable teams={teams} />
+                        <MatchList
+                            isAuthenticated={isAuthenticated}
+                            isModalOpen={isEditMatchModalOpen}
+                            toggleModal={toggleEditMatchModal}
+                        />
                         {isAuthenticated && <AddTeam onTeamAdded={loadTeams} />}
                         {!isAuthenticated && <Login isModalOpen={isLoginModalOpen} toggleModal={toggleLoginModal} />}
                         {isAuthenticated && (

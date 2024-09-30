@@ -24,10 +24,10 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
     const [awayTeam, setAwayTeam] = useState<string>('');
     const [homeScore, setHomeScore] = useState<number | ''>('');
     const [awayScore, setAwayScore] = useState<number | ''>('');
-    const [homeTeamPlayers, setHomeTeamPlayers] = useState<string[]>([]);
-    const [awayTeamPlayers, setAwayTeamPlayers] = useState<string[]>([]);
     const [homePlayers, setHomePlayers] = useState<Player[]>([]);
     const [awayPlayers, setAwayPlayers] = useState<Player[]>([]);
+    const [selectedHomePlayers, setSelectedHomePlayers] = useState<string[]>([]);
+    const [selectedAwayPlayers, setSelectedAwayPlayers] = useState<string[]>([]);
 
     // Pobieranie drużyn
     useEffect(() => {
@@ -43,7 +43,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
         fetchTeams();
     }, []);
 
-    // Pobierz graczy dla wybranej drużyny domowej
+    // Pobieranie graczy dla wybranych drużyn
     useEffect(() => {
         const fetchPlayers = async (teamId: string) => {
             try {
@@ -57,9 +57,11 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
 
         if (homeTeam) {
             fetchPlayers(homeTeam).then(data => setHomePlayers(data));
+            setSelectedHomePlayers([]); // Resetowanie wybranych graczy przy zmianie drużyny
         }
         if (awayTeam) {
             fetchPlayers(awayTeam).then(data => setAwayPlayers(data));
+            setSelectedAwayPlayers([]); // Resetowanie wybranych graczy przy zmianie drużyny
         }
     }, [homeTeam, awayTeam]);
 
@@ -72,7 +74,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
             return;
         }
 
-        if (homeTeamPlayers.length === 0 || awayTeamPlayers.length === 0) {
+        if (selectedHomePlayers.length === 0 || selectedAwayPlayers.length === 0) {
             alert('Wybierz graczy dla obu drużyn');
             return;
         }
@@ -83,8 +85,8 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                 awayTeam,
                 homeScore: Number(homeScore),
                 awayScore: Number(awayScore),
-                homeTeamPlayers,
-                awayTeamPlayers,
+                homePlayers: selectedHomePlayers,
+                awayPlayers: selectedAwayPlayers,
             });
 
             alert('Mecz został dodany!');
@@ -93,25 +95,31 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
             setAwayTeam('');
             setHomeScore('');
             setAwayScore('');
-            setHomeTeamPlayers([]);
-            setAwayTeamPlayers([]);
             setHomePlayers([]);
             setAwayPlayers([]);
+            setSelectedHomePlayers([]);
+            setSelectedAwayPlayers([]);
         } catch (error) {
             console.error('Nie udało się dodać meczu', error);
         }
     };
 
+    // Zarządzanie wyborem graczy
     const handlePlayerSelection = (team: string, playerId: string, selected: boolean) => {
         if (team === 'home') {
-            setHomeTeamPlayers(prev => (selected ? [...prev, playerId] : prev.filter(id => id !== playerId)));
+            if (selected) {
+                setSelectedHomePlayers(prev => [...prev, playerId]);
+            } else {
+                setSelectedHomePlayers(prev => prev.filter(id => id !== playerId));
+            }
         } else if (team === 'away') {
-            setAwayTeamPlayers(prev => (selected ? [...prev, playerId] : prev.filter(id => id !== playerId)));
+            if (selected) {
+                setSelectedAwayPlayers(prev => [...prev, playerId]);
+            } else {
+                setSelectedAwayPlayers(prev => prev.filter(id => id !== playerId));
+            }
         }
     };
-
-    const homeTeamName = teams.find(t => t._id === homeTeam)?.name;
-    const awayTeamName = teams.find(t => t._id === awayTeam)?.name;
 
     return (
         <ModalComponent modalIsOpen={isModalOpen} closeModal={toggleModal}>
@@ -140,7 +148,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                     </select>
                 </div>
                 <div>
-                    <label>Wynik {homeTeamName}</label>
+                    <label>Wynik {homeTeam}</label>
                     <input
                         type="number"
                         value={homeScore}
@@ -149,7 +157,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                     />
                 </div>
                 <div>
-                    <label>Wynik {awayTeamName}</label>
+                    <label>Wynik {awayTeam}</label>
                     <input
                         type="number"
                         value={awayScore}
@@ -167,6 +175,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                                 <input
                                     type="checkbox"
                                     id={`home-${player._id}`}
+                                    checked={selectedHomePlayers.includes(player._id)}
                                     onChange={e => handlePlayerSelection('home', player._id, e.target.checked)}
                                 />
                                 <label htmlFor={`home-${player._id}`}>{player.name}</label>
@@ -184,6 +193,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                                 <input
                                     type="checkbox"
                                     id={`away-${player._id}`}
+                                    checked={selectedAwayPlayers.includes(player._id)}
                                     onChange={e => handlePlayerSelection('away', player._id, e.target.checked)}
                                 />
                                 <label htmlFor={`away-${player._id}`}>{player.name}</label>
