@@ -16,18 +16,17 @@ jobs:
             - npm-packages-
       - run:
           name: Install dependencies
-          command: npm install
+          command: |
+            npm i
       - save_cache:
           key: npm-packages-{{ checksum "package-lock.json" }}
           paths:
             - ~/.npm
       - run:
-          name: Build application
-          command: npm run build
-      - run:
-          name: Deploy to server
+          name: Build and upload application
           command: |
-            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH}" build/* ${MYDEVIL_USER}@${MYDEVIL_HOST}:/home/${MYDEVIL_USER}/domains/liga-q3.pl/public_nodejs/public
+            npm run build
+            scp -r -o StrictHostKeyChecking=no -i "${SSH_KEY_PATH}" build/* ${MYDEVIL_USER}@${MYDEVIL_HOST}:/home/${MYDEVIL_USER}/domains/liga-q3.pl/public_nodejs/public
     environment:
       MYDEVIL_USER: webartstudio
       MYDEVIL_HOST: s49.mydevil.net
