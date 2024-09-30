@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-prod:
     docker:
-      - image: cimg/node:18.20.4  # Użycie nowszego obrazu cimg
+      - image: cimg/node:20.15.1
     working_directory: ~/repo
     steps:
       - checkout
