@@ -1,7 +1,8 @@
-// AddMatch.tsx
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../../../api/axiosConfig';
 import ModalComponent from '../../modal/ModalComponent';
+import { fetchPlayersByTeam } from '../../../api/api-players';
+import { fetchTeams } from '../../../api/api-teams';
+import { addMatch } from '../../../api/api-matches';
 
 interface IAddMatchProps {
     isModalOpen: boolean;
@@ -22,8 +23,8 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
     const [teams, setTeams] = useState<Team[]>([]);
     const [homeTeam, setHomeTeam] = useState<string>('');
     const [awayTeam, setAwayTeam] = useState<string>('');
-    const [homeScore, setHomeScore] = useState<number | ''>('');
-    const [awayScore, setAwayScore] = useState<number | ''>('');
+    const [homeScore, setHomeScore] = useState<number>(0);
+    const [awayScore, setAwayScore] = useState<number>(0);
     const [homePlayers, setHomePlayers] = useState<Player[]>([]);
     const [awayPlayers, setAwayPlayers] = useState<Player[]>([]);
     const [selectedHomePlayers, setSelectedHomePlayers] = useState<string[]>([]);
@@ -31,23 +32,23 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
 
     // Pobieranie drużyn
     useEffect(() => {
-        const fetchTeams = async () => {
+        const fetchAllTeams = async () => {
             try {
-                const response = await axiosInstance.get('/teams');
+                const response = await fetchTeams();
                 setTeams(response.data);
             } catch (error) {
                 console.error('Nie udało się pobrać drużyn', error);
             }
         };
 
-        fetchTeams();
+        fetchAllTeams();
     }, []);
 
     // Pobieranie graczy dla wybranych drużyn
     useEffect(() => {
         const fetchPlayers = async (teamId: string) => {
             try {
-                const response = await axiosInstance.get(`/players/team/${teamId}`);
+                const response = await fetchPlayersByTeam(teamId);
                 return response.data;
             } catch (error) {
                 console.error('Nie udało się pobrać graczy', error);
@@ -66,7 +67,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
     }, [homeTeam, awayTeam]);
 
     // Funkcja do dodawania meczu
-    const addMatch = async (e: React.FormEvent) => {
+    const handleAddMatch = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!homeTeam || !awayTeam || homeTeam === awayTeam) {
@@ -80,21 +81,14 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
         }
 
         try {
-            await axiosInstance.post('/matches', {
-                homeTeam,
-                awayTeam,
-                homeScore: Number(homeScore),
-                awayScore: Number(awayScore),
-                homePlayers: selectedHomePlayers,
-                awayPlayers: selectedAwayPlayers,
-            });
+            await addMatch(homeTeam, awayTeam, homeScore, awayScore, selectedHomePlayers, selectedAwayPlayers);
 
             alert('Mecz został dodany!');
             // Resetowanie formularza
             setHomeTeam('');
             setAwayTeam('');
-            setHomeScore('');
-            setAwayScore('');
+            setHomeScore(0);
+            setAwayScore(0);
             setHomePlayers([]);
             setAwayPlayers([]);
             setSelectedHomePlayers([]);
@@ -123,13 +117,13 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
 
     return (
         <ModalComponent modalIsOpen={isModalOpen} closeModal={toggleModal}>
-            <form onSubmit={addMatch}>
+            <form onSubmit={handleAddMatch}>
                 <h2>Dodaj nowy mecz</h2>
                 <div>
                     <label>Drużyna #1</label>
                     <select value={homeTeam} onChange={e => setHomeTeam(e.target.value)} required>
                         <option value="">Wybierz drużynę</option>
-                        {teams.map(team => (
+                        {teams?.map(team => (
                             <option key={team._id} value={team._id}>
                                 {team.name}
                             </option>
@@ -140,7 +134,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                     <label>Drużyna #2</label>
                     <select value={awayTeam} onChange={e => setAwayTeam(e.target.value)} required>
                         <option value="">Wybierz drużynę</option>
-                        {teams.map(team => (
+                        {teams?.map(team => (
                             <option key={team._id} value={team._id}>
                                 {team.name}
                             </option>
@@ -152,7 +146,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                     <input
                         type="number"
                         value={homeScore}
-                        onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : '')}
+                        onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : 0)}
                         required
                     />
                 </div>
@@ -161,7 +155,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                     <input
                         type="number"
                         value={awayScore}
-                        onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : '')}
+                        onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : 0)}
                         required
                     />
                 </div>
@@ -170,7 +164,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                 {homeTeam && (
                     <div>
                         <h3>Wybierz graczy dla {teams.find(t => t._id === homeTeam)?.name}</h3>
-                        {homePlayers.map(player => (
+                        {homePlayers?.map(player => (
                             <div key={player._id}>
                                 <input
                                     type="checkbox"
@@ -188,7 +182,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                 {awayTeam && (
                     <div>
                         <h3>Wybierz graczy dla {teams.find(t => t._id === awayTeam)?.name}</h3>
-                        {awayPlayers.map(player => (
+                        {awayPlayers?.map(player => (
                             <div key={player._id}>
                                 <input
                                     type="checkbox"

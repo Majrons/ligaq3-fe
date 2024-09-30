@@ -1,7 +1,7 @@
 // MatchList.tsx
 import React, { useEffect, useState } from 'react';
-import axiosInstance from '../../../api/axiosConfig';
 import EditMatch from '../edit-match/EditMatch';
+import { deleteMatch, fetchAllMatches } from '../../../api/api-matches';
 
 interface Match {
     _id: string;
@@ -27,7 +27,7 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
     useEffect(() => {
         const fetchMatches = async () => {
             try {
-                const response = await axiosInstance.get('/matches');
+                const response = await fetchAllMatches();
                 setMatches(response.data);
             } catch (error) {
                 console.error('Nie udało się pobrać meczów', error);
@@ -38,9 +38,9 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
     }, []);
 
     // Funkcja usuwania meczu
-    const deleteMatch = async (matchId: string) => {
+    const handleDeleteMatch = async (matchId: string) => {
         try {
-            await axiosInstance.delete(`/matches/${matchId}`);
+            await deleteMatch(matchId);
             setMatches(matches.filter(match => match._id !== matchId));
         } catch (error) {
             console.error('Nie udało się usunąć meczu', error);
@@ -63,7 +63,7 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
                         {isAuthenticated && (
                             <div>
                                 <button onClick={() => setEditMatchId(match._id)}>Edytuj</button>
-                                <button onClick={() => deleteMatch(match._id)}>Usuń</button>
+                                <button onClick={() => handleDeleteMatch(match._id)}>Usuń</button>
                             </div>
                         )}
 

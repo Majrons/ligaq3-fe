@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../../../api/axiosConfig';
 import ModalComponent from '../../modal/ModalComponent';
+import { fetchPlayersByTeam } from '../../../api/api-players';
+import { fetchTeams } from '../../../api/api-teams';
+import { fetchMatch, updateMatch } from '../../../api/api-matches';
 
 interface IEditMatchProps {
     matchId: string;
@@ -26,17 +28,17 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
     const [awayTeam, setAwayTeam] = useState<string>('');
     const [homePlayers, setHomePlayers] = useState<string[]>([]);
     const [awayPlayers, setAwayPlayers] = useState<string[]>([]);
-    const [homeScore, setHomeScore] = useState<number | ''>('');
-    const [awayScore, setAwayScore] = useState<number | ''>('');
+    const [homeScore, setHomeScore] = useState<number>(0);
+    const [awayScore, setAwayScore] = useState<number>(0);
 
     // Pobieranie dostępnych drużyn i graczy
     useEffect(() => {
         const fetchTeamsAndPlayers = async () => {
             try {
-                const teamResponse = await axiosInstance.get('/teams');
+                const teamResponse = await fetchTeams();
                 setTeams(teamResponse.data);
 
-                const playerResponse = await axiosInstance.get('/players');
+                const playerResponse = await fetchPlayersByTeam(teamResponse.data.id);
                 setPlayers(playerResponse.data);
             } catch (error) {
                 console.error('Nie udało się pobrać drużyn lub graczy', error);
@@ -48,9 +50,9 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
 
     // Pobieranie danych meczu
     useEffect(() => {
-        const fetchMatch = async () => {
+        const handleFetchMatch = async () => {
             try {
-                const response = await axiosInstance.get(`/matches/${matchId}`);
+                const response = await fetchMatch(matchId);
                 const { homeTeam, awayTeam, homeScore, awayScore, players: matchPlayers } = response.data;
 
                 setHomeTeam(homeTeam);
@@ -65,25 +67,16 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
         };
 
         if (matchId) {
-            fetchMatch();
+            handleFetchMatch();
         }
     }, [matchId]);
 
     // Funkcja aktualizacji meczu
-    const updateMatch = async (e: React.FormEvent) => {
+    const handleUpdateMatch = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            await axiosInstance.put(`/matches/${matchId}`, {
-                homeTeam,
-                awayTeam,
-                homeScore: Number(homeScore),
-                awayScore: Number(awayScore),
-                players: {
-                    homePlayers,
-                    awayPlayers,
-                },
-            });
+            await updateMatch(matchId, homeTeam, awayTeam, homeScore, awayScore, homePlayers, awayPlayers);
 
             alert('Mecz został zaktualizowany!');
             toggleModal(false);
@@ -94,7 +87,7 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
 
     return (
         <ModalComponent modalIsOpen={isModalOpen} closeModal={toggleModal}>
-            <form onSubmit={updateMatch}>
+            <form onSubmit={handleUpdateMatch}>
                 <h2>Edytuj mecz</h2>
                 <div>
                     <label>Drużyna #1</label>
@@ -153,7 +146,7 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
                     <input
                         type="number"
                         value={homeScore}
-                        onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : '')}
+                        onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : 0)}
                         required
                     />
                 </div>
@@ -162,7 +155,7 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
                     <input
                         type="number"
                         value={awayScore}
-                        onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : '')}
+                        onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : 0)}
                         required
                     />
                 </div>

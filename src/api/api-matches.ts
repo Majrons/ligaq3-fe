@@ -22,13 +22,24 @@ export const fetchAllMatches = async () => {
     }
 };
 
+export const fetchMatch = async (matchId: string) => {
+    try {
+        const response = await axiosInstance.get(`/matches/${matchId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Błąd pobierania wszystkich meczów:', error);
+        throw error;
+    }
+};
+
 // Dodaj nowy mecz
 export const addMatch = async (
     homeTeam: string,
     awayTeam: string,
     homeScore: number,
     awayScore: number,
-    players: string[]
+    homePlayers: string[],
+    awayPlayers: string[]
 ) => {
     try {
         const response = await axiosInstance.post('/matches', {
@@ -36,7 +47,8 @@ export const addMatch = async (
             awayTeam,
             homeScore,
             awayScore,
-            players,
+            homePlayers,
+            awayPlayers,
         });
         return response.data;
     } catch (error) {
@@ -52,7 +64,8 @@ export const updateMatch = async (
     awayTeam: string,
     homeScore: number,
     awayScore: number,
-    players: string[]
+    homePlayers: string[],
+    awayPlayers: string[]
 ) => {
     try {
         const response = await axiosInstance.put(`/matches/${matchId}`, {
@@ -60,7 +73,8 @@ export const updateMatch = async (
             awayTeam,
             homeScore,
             awayScore,
-            players,
+            homePlayers,
+            awayPlayers,
         });
         return response.data;
     } catch (error) {
