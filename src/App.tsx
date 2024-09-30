@@ -5,11 +5,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from '../src/components/homepage/HomePage';
 import TeamPage from '../src/components/teams/team-page/TeamPage';
 import classnames from 'classnames';
+import Menu from '../src/components/menu/Menu';
 
 const App: React.FC = () => {
     return (
         <div className={classnames('grid', styles.container)}>
             <Router>
+                <Menu />
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/team/:teamId" element={<TeamPage />} />

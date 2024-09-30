@@ -20,3 +20,12 @@ export const addTeam = async (teamName: string) => {
     const response = await axiosInstance.post('/teams', { name: teamName });
     return response.data;
 };
+
+export const updateTeam = async (id: string, wins: number, losses: number) => {
+    const response = await axiosInstance.put(`/teams/${id}`, { wins, losses });
+    return response.data;
+};
+
+export const deleteTeam = async (id: string) => {
+    await axiosInstance.delete(`/teams/${id}`);
+};
