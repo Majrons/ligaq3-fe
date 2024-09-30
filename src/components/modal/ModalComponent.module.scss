@@ -1,3 +1,4 @@
+@import '../../assets/styles/mixins';
 
 .modal {
     position: relative;
@@ -9,12 +10,17 @@
         top: 35%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 35%;
-        height: 25%;
+        width: 90%;
+        height: 30%;
         background-color: white;
         display: flex;
         justify-content: center;
         align-items: flex-start;
+
+        @include bp(l) {
+            width: 35%;
+            height: 45%;
+        }
 
         &Backdrop {
             position: absolute;
@@ -28,8 +34,9 @@
 
     &Content {
         display: flex;
-        justify-content: flex-end;
-        padding: 15px;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
     }
 
     &Close {
