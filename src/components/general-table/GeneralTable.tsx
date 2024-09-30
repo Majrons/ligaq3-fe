@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 interface Team {
     _id: string;
     name: string;
-    wins: number;
     losses: number;
+    wins: number;
     matchesPlayed: number;
 }
 
