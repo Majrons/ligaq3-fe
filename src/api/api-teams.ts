@@ -21,8 +21,8 @@ export const addTeam = async (teamName: string) => {
     return response.data;
 };
 
-export const updateTeam = async (id: string, wins: number, losses: number) => {
-    const response = await axiosInstance.put(`/teams/${id}`, { wins, losses });
+export const updateTeam = async (id: string, name: string) => {
+    const response = await axiosInstance.put(`/teams/${id}`);
     return response.data;
 };
 

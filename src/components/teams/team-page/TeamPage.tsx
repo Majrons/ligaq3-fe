@@ -1,6 +1,8 @@
 // TeamPage.tsx
 import React, { useEffect, useState } from 'react';
-import axiosInstance from '../../../api/axiosConfig';
+import { fetchTeam, updateTeam, deleteTeam } from '../../../api/api-teams';
+import { fetchPlayersByTeam, addPlayerToTeam, deletePlayer } from '../../../api/api-players';
+import { fetchMatchesByTeam } from '../../../api/api-matches';
 import { useParams, useNavigate } from 'react-router-dom';
 
 interface Player {
@@ -37,14 +39,14 @@ const TeamPage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const teamResponse = await axiosInstance.get(`/teams/${teamId}`);
-                setTeamName(teamResponse.data.name);
+                const teamData = await fetchTeam(teamId!);
+                setTeamName(teamData.name);
 
-                const playersResponse = await axiosInstance.get(`/players/team/${teamId}`);
-                setPlayers(playersResponse.data);
+                const playerData = await fetchPlayersByTeam(teamId!);
+                setPlayers(playerData);
 
-                const matchesResponse = await axiosInstance.get(`/matches/team/${teamId}`);
-                setMatches(matchesResponse.data);
+                const matchData = await fetchMatchesByTeam(teamId!);
+                setMatches(matchData);
             } catch (error) {
                 console.error('Nie udało się pobrać danych', error);
             }
@@ -53,14 +55,11 @@ const TeamPage: React.FC = () => {
         fetchData();
     }, [teamId]);
 
-    const addPlayer = async (e: React.FormEvent) => {
+    const handleAddPlayer = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axiosInstance.post('/players', {
-                ...newPlayer,
-                teamId,
-            });
-            setPlayers([...players, response.data]);
+            const newPlayerData = await addPlayerToTeam(newPlayer.name, teamId!);
+            setPlayers([...players, newPlayerData]);
             setNewPlayer({ name: '' });
             setShowAddPlayerForm(false);
         } catch (error) {
@@ -68,29 +67,29 @@ const TeamPage: React.FC = () => {
         }
     };
 
-    const deletePlayer = async (playerId: string) => {
+    const handleDeletePlayer = async (playerId: string) => {
         try {
-            await axiosInstance.delete(`/players/${playerId}`);
+            await deletePlayer(playerId);
             setPlayers(players.filter(player => player._id !== playerId));
         } catch (error) {
             console.error('Nie udało się usunąć gracza', error);
         }
     };
 
-    const updateTeamName = async () => {
+    const handleUpdateTeamName = async () => {
         try {
-            const response = await axiosInstance.put(`/teams/${teamId}`, { name: editedTeamName });
-            setTeamName(response.data.name);
+            const updatedTeam = await updateTeam(teamId || '', editedTeamName);
+            setTeamName(updatedTeam.name);
             setIsEditing(false);
         } catch (error) {
             console.error('Nie udało się zaktualizować nazwy drużyny', error);
         }
     };
 
-    const deleteTeam = async () => {
+    const handleDeleteTeam = async () => {
         try {
-            await axiosInstance.delete(`/teams/${teamId}`);
-            navigate('/teams'); // Przekierowanie do listy drużyn po usunięciu
+            await deleteTeam(teamId || '');
+            navigate('/teams');
         } catch (error) {
             console.error('Nie udało się usunąć drużyny', error);
         }
@@ -99,11 +98,11 @@ const TeamPage: React.FC = () => {
     return (
         <div>
             <h1>
-                Szczegóły drużyny:{' '}
+                Szczegóły drużyny:
                 {isEditing ? (
                     <>
                         <input type="text" value={editedTeamName} onChange={e => setEditedTeamName(e.target.value)} />
-                        <button onClick={updateTeamName}>Zapisz</button>
+                        <button onClick={handleUpdateTeamName}>Zapisz</button>
                         <button onClick={() => setIsEditing(false)}>Anuluj</button>
                     </>
                 ) : (
@@ -118,7 +117,7 @@ const TeamPage: React.FC = () => {
                                     }}>
                                     Edytuj nazwę
                                 </button>
-                                <button onClick={deleteTeam}>Usuń drużynę</button>
+                                <button onClick={handleDeleteTeam}>Usuń drużynę</button>
                             </>
                         )}
                     </>
@@ -130,7 +129,7 @@ const TeamPage: React.FC = () => {
                 {players.map(player => (
                     <li key={player._id}>
                         {player.name}
-                        {isLoggedIn && <button onClick={() => deletePlayer(player._id)}>Usuń</button>}
+                        {isLoggedIn && <button onClick={() => handleDeletePlayer(player._id)}>Usuń</button>}
                     </li>
                 ))}
             </ul>
@@ -142,12 +141,12 @@ const TeamPage: React.FC = () => {
                     </button>
 
                     {showAddPlayerForm && (
-                        <form onSubmit={addPlayer}>
+                        <form onSubmit={handleAddPlayer}>
                             <input
                                 type="text"
                                 placeholder="Imię gracza"
                                 value={newPlayer.name}
-                                onChange={e => setNewPlayer({ ...newPlayer, name: e.target.value })}
+                                onChange={e => setNewPlayer({ name: e.target.value })}
                                 required
                             />
                             <button type="submit">Dodaj gracza</button>
