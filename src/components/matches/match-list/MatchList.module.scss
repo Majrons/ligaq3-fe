@@ -1,0 +1,50 @@
+.container {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &Title {
+        font-size: 2rem;
+    }
+
+    &List {
+        display: flex;
+        list-style: none;
+
+        &Item {
+            display: flex;
+            flex-direction: column;
+
+            &Date {
+                display: flex;
+                font-size: 1.2rem;
+
+                &Title {
+                    font-weight: bold;
+                    margin-right: 20px;
+                }
+            }
+        }
+    }
+
+    &Match {
+        display: flex;
+        width: 100%;
+    }
+
+    &HomeTeam {
+        display: flex;
+        flex-direction: column;
+
+        &NameScore {
+
+        }
+    }
+
+    &AwayTeam {
+        display: flex;
+        flex-direction: column;
+    }
+}

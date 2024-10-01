@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './HomaPage.module.scss';
 import GeneralTable from '../general-table/GeneralTable';
 import Login from '../login/Login';
-import { fetchTeams } from '../../api/api-teams';
+import { fetchTeams, resetLeagueTable } from '../../api/api-teams';
 import AddTeam from '../teams/add-team/AddTeam';
 import AddMatch from '../../components/matches/add-match/AddMatch';
 import MatchList from '../matches/match-list/MatchList';
@@ -37,6 +37,15 @@ const HomePage: React.FC = () => {
         }
     };
 
+    const resetTable = async () => {
+        try {
+            await resetLeagueTable();
+            alert('Tabela została wyzerowana!');
+        } catch (error) {
+            console.error('Błąd podczas zerowania tabeli:', error);
+        }
+    };
+
     useEffect(() => {
         loadTeams();
     }, []);
@@ -61,6 +70,7 @@ const HomePage: React.FC = () => {
                         </button>
                     )}
                     {isAuthenticated && <button onClick={() => toggleAddMatchModal(true)}>Dodaj mecz</button>}
+                    {isAuthenticated && <button onClick={() => resetTable()}>Wyczyść wyniki tabeli</button>}
                 </div>
             </header>
 
@@ -70,12 +80,12 @@ const HomePage: React.FC = () => {
                 ) : (
                     <>
                         <GeneralTable teams={teams} />
+                        {isAuthenticated && <AddTeam onTeamAdded={loadTeams} />}
                         <MatchList
                             isAuthenticated={isAuthenticated}
                             isModalOpen={isEditMatchModalOpen}
                             toggleModal={toggleEditMatchModal}
                         />
-                        {isAuthenticated && <AddTeam onTeamAdded={loadTeams} />}
                         {!isAuthenticated && <Login isModalOpen={isLoginModalOpen} toggleModal={toggleLoginModal} />}
                         {isAuthenticated && (
                             <AddMatch isModalOpen={isAddMatchModalOpen} toggleModal={toggleAddMatchModal} />

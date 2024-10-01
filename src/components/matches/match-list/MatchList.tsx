@@ -1,5 +1,6 @@
 // MatchList.tsx
 import React, { useEffect, useState } from 'react';
+import styles from './MatchList.module.scss';
 import EditMatch from '../edit-match/EditMatch';
 import { deleteMatch, fetchAllMatches } from '../../../api/api-matches';
 
@@ -9,7 +10,8 @@ interface Match {
     awayTeam: { _id: string; name: string };
     homeScore: number;
     awayScore: number;
-    players: Array<{ name: string }>;
+    homePlayers: Array<string>;
+    awayPlayers: Array<string>;
     date: string;
 }
 
@@ -28,7 +30,7 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
         const fetchMatches = async () => {
             try {
                 const response = await fetchAllMatches();
-                setMatches(response.data);
+                setMatches(response);
             } catch (error) {
                 console.error('Nie udało się pobrać meczów', error);
             }
@@ -48,18 +50,40 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
     };
 
     return (
-        <div>
-            <h2>Lista meczów</h2>
-            <ul>
+        <div className={styles.container}>
+            <h2 className={styles.containerTitle}>Lista meczy</h2>
+            <ul className={styles.containerList}>
                 {matches.map(match => (
-                    <li key={match._id}>
-                        <p>
-                            <strong>{match.homeTeam.name}</strong> {match.homeScore} - {match.awayScore}{' '}
-                            <strong>{match.awayTeam.name}</strong>
+                    <li className={styles.containerListItem} key={match._id}>
+                        <p className={styles.containerListItemDate}>
+                            <span className={styles.containerListItemDateTitle}>Data:</span>{' '}
+                            {new Date(match.date).toLocaleDateString()}
                         </p>
-                        <p>Data: {new Date(match.date).toLocaleDateString()}</p>
-                        <p>Gracze: {match.players.map(player => player.name).join(', ')}</p>
-
+                        <div className={styles.containerMatch}>
+                            <div className={styles.containerHomeTeam}>
+                                <div className={styles.containerHomeTeamName}>
+                                    <strong>{match.homeTeam.name}</strong>
+                                    <span className={styles.containerHomeTeamScore}>{match.homeScore}</span>
+                                </div>
+                                <div className={styles.containerHomeTeamPlayers}>
+                                    {match.homePlayers.map((player, index) => (
+                                        <p key={index}>{player}</p>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className={styles.containerMatchDivider}>{` - `}</div>
+                            <div className={styles.containerAwayTeam}>
+                                <div className={styles.containerHomeTeamName}>
+                                    <span className={styles.containerHomeTeamScore}>{match.awayScore}</span>
+                                    <strong>{match.awayTeam.name}</strong>
+                                </div>
+                                <div className={styles.containerAwayTeamPlayers}>
+                                    {match.awayPlayers.map((player, index) => (
+                                        <p key={index}>{player}</p>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                         {isAuthenticated && (
                             <div>
                                 <button onClick={() => setEditMatchId(match._id)}>Edytuj</button>

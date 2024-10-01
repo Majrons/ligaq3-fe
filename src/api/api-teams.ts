@@ -29,3 +29,13 @@ export const updateTeam = async (id: string, name: string) => {
 export const deleteTeam = async (id: string) => {
     await axiosInstance.delete(`/teams/${id}`);
 };
+
+export const resetLeagueTable = async () => {
+    try {
+        const response = await axiosInstance.post('/teams/reset');
+        return response.data;
+    } catch (error) {
+        console.error('Błąd podczas resetowania tabeli ligowej:', error);
+        throw error;
+    }
+};
