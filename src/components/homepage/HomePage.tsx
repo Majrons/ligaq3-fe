@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
         <div className={styles.homepage}>
             <header className={styles.homepageHeader}>
                 <h1>Liga Rozgrywek Kwartalnych</h1>
-                <div>
+                <div className={styles.homepageHeaderBtns}>
                     {isAuthenticated ? (
                         <Button label={'Wyloguj się'} onClick={() => handleLogout()} />
                     ) : (

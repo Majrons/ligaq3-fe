@@ -25,5 +25,10 @@
                 font-size: 4rem;
             }
         }
+
+        &Btns {
+            display: flex;
+            gap: 5px;
+        }
     }
 }

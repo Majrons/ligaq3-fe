@@ -1,3 +1,5 @@
+@import '../../../assets/styles/mixins';
+
 .container {
     display: flex;
     width: 100%;
@@ -10,8 +12,19 @@
     }
 
     &List {
-        display: flex;
         list-style: none;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 25px;
+        padding: 0 10px;
+
+        @include bp(l) {
+            padding: 0 45px;
+            gap: 50px 35px;
+            max-width: 1200px;
+            grid-template-columns: repeat(2, 1fr);
+        }
 
         &Item {
             display: flex;
@@ -26,25 +39,98 @@
                     margin-right: 20px;
                 }
             }
+
+            &Buttons {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 5px;
+
+                &Btn {
+                    height: 27px;
+                    width: 70px;
+                }
+            }
         }
     }
 
     &Match {
         display: flex;
         width: 100%;
-    }
+        justify-content: space-between;
 
-    &HomeTeam {
-        display: flex;
-        flex-direction: column;
+        &Score {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 0;
 
-        &NameScore {
+            @include bp(l) {
+                margin: 0 25px;
+            }
 
+            &Divider {
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                font-size: 1.5rem;
+                padding: 0 15px;
+
+                @include bp(l) {
+                    font-size: 3rem;
+                }
+            }
         }
     }
 
-    &AwayTeam {
+    &Team {
         display: flex;
         flex-direction: column;
+        flex: 1;
+
+        &Name {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            padding-bottom: 8px;
+
+            &Home {
+                justify-content: flex-start;
+            }
+
+            &Away {
+                justify-content: flex-end;
+                text-align: end;
+            }
+        }
+
+        &Score {
+            font-size: 1.5rem;
+
+            @include bp(l) {
+                font-size: 3rem;
+            }
+        }
+
+        &Players {
+            display: flex;
+            flex-direction: column;
+
+            p {
+                padding: 0
+            }
+
+            &Home {
+                align-items: flex-start;
+            }
+
+            &Away {
+                align-items: flex-end;
+            }
+        }
     }
 }

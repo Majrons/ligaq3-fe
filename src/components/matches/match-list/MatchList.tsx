@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import styles from './MatchList.module.scss';
 import EditMatch from '../edit-match/EditMatch';
 import { deleteMatch, fetchAllMatches } from '../../../api/api-matches';
+import Button from '../../button/Button';
+import classnames from 'classnames';
 
 interface Match {
     _id: string;
@@ -60,24 +62,34 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
                             {new Date(match.date).toLocaleDateString()}
                         </p>
                         <div className={styles.containerMatch}>
-                            <div className={styles.containerHomeTeam}>
-                                <div className={styles.containerHomeTeamName}>
+                            <div className={styles.containerTeam}>
+                                <div className={classnames(styles.containerTeamName, styles.containerTeamNameHome)}>
                                     <strong>{match.homeTeam.name}</strong>
-                                    <span className={styles.containerHomeTeamScore}>{match.homeScore}</span>
                                 </div>
-                                <div className={styles.containerHomeTeamPlayers}>
+                                <div
+                                    className={classnames(
+                                        styles.containerTeamPlayers,
+                                        styles.containerTeamPlayersHome
+                                    )}>
                                     {match.homePlayers.map((player, index) => (
                                         <p key={index}>{player}</p>
                                     ))}
                                 </div>
                             </div>
-                            <div className={styles.containerMatchDivider}>{` - `}</div>
-                            <div className={styles.containerAwayTeam}>
-                                <div className={styles.containerHomeTeamName}>
-                                    <span className={styles.containerHomeTeamScore}>{match.awayScore}</span>
+                            <div className={styles.containerMatchScore}>
+                                <div className={styles.containerTeamScore}>{match.homeScore}</div>
+                                <div className={styles.containerMatchScoreDivider}>{' : '}</div>
+                                <span className={styles.containerTeamScore}>{match.awayScore}</span>
+                            </div>
+                            <div className={styles.containerTeam}>
+                                <div className={classnames(styles.containerTeamName, styles.containerTeamNameAway)}>
                                     <strong>{match.awayTeam.name}</strong>
                                 </div>
-                                <div className={styles.containerAwayTeamPlayers}>
+                                <div
+                                    className={classnames(
+                                        styles.containerTeamPlayers,
+                                        styles.containerTeamPlayersAway
+                                    )}>
                                     {match.awayPlayers.map((player, index) => (
                                         <p key={index}>{player}</p>
                                     ))}
@@ -85,9 +97,17 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
                             </div>
                         </div>
                         {isAuthenticated && (
-                            <div>
-                                <button onClick={() => setEditMatchId(match._id)}>Edytuj</button>
-                                <button onClick={() => handleDeleteMatch(match._id)}>Usuń</button>
+                            <div className={styles.containerListItemButtons}>
+                                <Button
+                                    classes={styles.containerListItemButtonsBtn}
+                                    onClick={() => setEditMatchId(match._id)}
+                                    label={'Edytuj'}
+                                />
+                                <Button
+                                    classes={styles.containerListItemButtonsBtn}
+                                    onClick={() => handleDeleteMatch(match._id)}
+                                    label={'Usuń'}
+                                />
                             </div>
                         )}
 
