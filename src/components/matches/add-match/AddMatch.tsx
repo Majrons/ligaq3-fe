@@ -4,6 +4,9 @@ import ModalComponent from '../../modal/ModalComponent';
 import { fetchPlayersByTeam } from '../../../api/api-players';
 import { fetchTeams } from '../../../api/api-teams';
 import { addMatch } from '../../../api/api-matches';
+import addTeamtheme from '../../../assets/styles/theme';
+import { TextField, ThemeProvider } from '@mui/material';
+import Button from '../../button/Button';
 
 interface IAddMatchProps {
     isModalOpen: boolean;
@@ -72,6 +75,17 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
         }
     }, [homeTeam, awayTeam]);
 
+    const clearForm = () => {
+        setHomeTeam('');
+        setAwayTeam('');
+        setHomeScore(0);
+        setAwayScore(0);
+        setHomePlayers([]);
+        setAwayPlayers([]);
+        setSelectedHomePlayers([]);
+        setSelectedAwayPlayers([]);
+    };
+
     // Funkcja do dodawania meczu
     const handleAddMatch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -91,17 +105,15 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
 
             alert('Mecz został dodany!');
             // Resetowanie formularza
-            setHomeTeam('');
-            setAwayTeam('');
-            setHomeScore(0);
-            setAwayScore(0);
-            setHomePlayers([]);
-            setAwayPlayers([]);
-            setSelectedHomePlayers([]);
-            setSelectedAwayPlayers([]);
+            clearForm();
         } catch (error) {
             console.error('Nie udało się dodać meczu', error);
         }
+    };
+
+    const handleCancel = () => {
+        clearForm();
+        toggleModal(false);
     };
 
     // Zarządzanie wyborem graczy
@@ -159,12 +171,18 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                     </div>
                     <div>
                         <label>Wynik {getTeamName(awayTeam)}</label>
-                        <input
-                            type="number"
-                            value={awayScore}
-                            onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : 0)}
-                            required
-                        />
+                        <ThemeProvider theme={addTeamtheme}>
+                            <TextField
+                                id="outlined-basic"
+                                type="number"
+                                variant="outlined"
+                                className={styles.addTeamInput}
+                                label={`Wpisz wynik ${getTeamName(awayTeam)}`}
+                                onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : 0)}
+                                value={awayScore}
+                                required
+                            />
+                        </ThemeProvider>
                     </div>
                     <div className={styles.containerChoosePlayers}>
                         {homeTeam && (
@@ -201,10 +219,8 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                         )}
                     </div>
                     <div>
-                        <button type="submit">Dodaj mecz</button>
-                        <button type="button" onClick={() => toggleModal(false)}>
-                            Anuluj
-                        </button>
+                        <Button label={'Dodaj mecz'} type={'submit'} />
+                        <Button label={'Anuluj'} onClick={handleCancel} />
                     </div>
                 </form>
             </div>

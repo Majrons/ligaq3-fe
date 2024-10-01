@@ -1,0 +1,86 @@
+@import '../../../assets/styles/mixins';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    &Title {
+        font-size: 4rem;
+        margin-bottom: 15px;
+    }
+
+    &Input {
+        margin-bottom: 15px;
+    }
+
+    &Form {
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &Buttons {
+        display: flex;
+        gap: 5px;
+    }
+
+    &PlayersList,
+    &MatchesList {
+        list-style: none;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        padding: 0 25px;
+
+        @include bp(l) {
+            width: 30%;
+        }
+
+        @include bp(xxxl) {
+            width: 20%;
+        }
+    }
+
+    &PlayersList {
+        &Title {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        &Item {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 25px;
+            font-size: 2rem;
+
+            &Btn {
+                width: 70px;
+            }
+        }
+    }
+
+    &MatchesList {
+        &Item {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px;
+
+            &Details {
+                display: flex;
+
+                div {
+                    padding: 0 5px;
+                }
+            }
+        }
+
+        &Title {
+            font-size: 2rem;
+            margin: 45px 0 0;
+        }
+    }
+}

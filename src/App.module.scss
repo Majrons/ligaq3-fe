@@ -1,3 +1,4 @@
+@import './assets/styles/mixins';
 
 .container {
     display: flex;
@@ -5,4 +6,8 @@
     width: 100%;
     align-items: center;
     background: black url('./assets/images/q3logo.jpg') center center repeat fixed;
+
+    @include bp-only(mobile) {
+        background-size: contain;
+    }
 }

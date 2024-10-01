@@ -5,13 +5,19 @@ import classnames from 'classnames';
 interface IButtonProps {
     label: string;
     classes?: string;
-    onClick(argument?: any): void;
+    onClick?(argument?: any): void;
+    type?: string;
 }
 
-const Button: React.FC<IButtonProps> = ({ label, classes, onClick }) => (
-    <button className={classnames(styles.btn, classes)} onClick={onClick}>
-        {label}
-    </button>
-);
+const Button: React.FC<IButtonProps> = ({ label, classes, onClick, type }) =>
+    type === 'submit' ? (
+        <button className={classnames(styles.btn, classes)} type={type}>
+            {label}
+        </button>
+    ) : (
+        <button className={classnames(styles.btn, classes)} onClick={onClick}>
+            {label}
+        </button>
+    );
 
 export default Button;
