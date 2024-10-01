@@ -6,6 +6,7 @@ import { fetchTeams, resetLeagueTable } from '../../api/api-teams';
 import AddTeam from '../teams/add-team/AddTeam';
 import AddMatch from '../../components/matches/add-match/AddMatch';
 import MatchList from '../matches/match-list/MatchList';
+import Button from '../button/Button';
 
 const HomePage: React.FC = () => {
     const [teams, setTeams] = useState([]);
@@ -18,6 +19,10 @@ const HomePage: React.FC = () => {
     const toggleLoginModal = (modalState: boolean) => setLoginModalOpen(modalState);
     const toggleAddMatchModal = (modalState: boolean) => setAddMatchModalOpen(modalState);
     const toggleEditMatchModal = (modalState: boolean) => setEditMatchModalOpen(modalState);
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -38,11 +43,15 @@ const HomePage: React.FC = () => {
     };
 
     const resetTable = async () => {
-        try {
-            await resetLeagueTable();
-            alert('Tabela została wyzerowana!');
-        } catch (error) {
-            console.error('Błąd podczas zerowania tabeli:', error);
+        const confirmed = window.confirm('Czy na pewno chcesz wyzerować dane tabeli?');
+
+        if (confirmed) {
+            try {
+                await resetLeagueTable();
+                alert('Tabela została wyzerowana!');
+            } catch (error) {
+                console.error('Błąd podczas zerowania tabeli:', error);
+            }
         }
     };
 
@@ -56,21 +65,12 @@ const HomePage: React.FC = () => {
                 <h1>Liga Rozgrywek Kwartalnych</h1>
                 <div>
                     {isAuthenticated ? (
-                        <button
-                            className={styles.homepageLoginButton}
-                            onClick={() => {
-                                localStorage.removeItem('token');
-                                setIsAuthenticated(false);
-                            }}>
-                            Wyloguj się
-                        </button>
+                        <Button label={'Wyloguj się'} onClick={() => handleLogout()} />
                     ) : (
-                        <button className={styles.homepageLoginButton} onClick={() => toggleLoginModal(true)}>
-                            Zaloguj się
-                        </button>
+                        <Button label={'Zaloguj się'} onClick={() => toggleLoginModal(true)} />
                     )}
-                    {isAuthenticated && <button onClick={() => toggleAddMatchModal(true)}>Dodaj mecz</button>}
-                    {isAuthenticated && <button onClick={() => resetTable()}>Wyczyść wyniki tabeli</button>}
+                    {isAuthenticated && <Button label={'Dodaj mecz'} onClick={() => toggleAddMatchModal(true)} />}
+                    {isAuthenticated && <Button label={'Wyczyść wyniki tabeli'} onClick={() => resetTable()} />}
                 </div>
             </header>
 

@@ -41,3 +41,25 @@
         @warn "Breakpoint mixin supports: xs, s, md, l, xl, xxl, xxxl, hd, l-hd";
     }
 }
+
+
+@mixin bp-only($class) {
+    @if $class == mobile {
+        @media (max-width: $screen-s-max) {
+             /* max 767px */
+            @content;
+        }
+    } @else if $class == tablet {
+        @media (min-width: $screen-m) and (max-width: $screen-l-max) {
+         /* from 768px to 1365px */
+            @content;
+        }
+    } @else if $class == desktop {
+        @media (min-width: $screen-xl) {
+            /* min 1366px */
+            @content;
+        }
+    } @else {
+        @warn "Breakpoint mixin supports: mobile, tablet, desktop";
+    }
+}
