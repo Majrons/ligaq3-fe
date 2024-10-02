@@ -46,8 +46,8 @@
         font-size: 1rem;
         font-weight: bold;
         position: absolute;
-        top: 16px;
-        right: 16px;
+        top: 12px;
+        right: 12px;
         cursor: pointer;
         width: 20px;
         height: 20px;
@@ -55,6 +55,11 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: black;
+        color: white;
+
+        @include bp(l) {
+            top: -45px;
+            right: -45px;
+        }
     }
 }
