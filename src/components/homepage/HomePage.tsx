@@ -82,7 +82,9 @@ const HomePage: React.FC = () => {
                         <Button label={'Zaloguj się'} onClick={() => toggleLoginModal(true)} />
                     )}
                     {isAuthenticated && <Button label={'Dodaj mecz'} onClick={() => toggleAddMatchModal(true)} />}
-                    {isAuthenticated && role === Role.ADMIN && <Button label={'Wyczyść wyniki tabeli'} onClick={() => resetTable()} />}
+                    {isAuthenticated && role === Role.ADMIN && (
+                        <Button label={'Wyczyść wyniki tabeli'} onClick={() => resetTable()} />
+                    )}
                 </div>
             </header>
 
@@ -94,6 +96,7 @@ const HomePage: React.FC = () => {
                         <GeneralTable teams={teams} />
                         {isAuthenticated && <AddTeam onTeamAdded={loadTeams} />}
                         <MatchList
+                            role={role}
                             isAuthenticated={isAuthenticated}
                             isModalOpen={isEditMatchModalOpen}
                             toggleModal={toggleEditMatchModal}

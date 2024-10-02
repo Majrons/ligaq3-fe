@@ -5,6 +5,7 @@ import EditMatch from '../edit-match/EditMatch';
 import { deleteMatch, fetchAllMatches } from '../../../api/api-matches';
 import Button from '../../button/Button';
 import classnames from 'classnames';
+import { Role } from '../../homepage/HomePage';
 
 interface Match {
     _id: string;
@@ -19,11 +20,12 @@ interface Match {
 
 interface MatchListProps {
     isAuthenticated: boolean;
+    role: string | null;
     isModalOpen: boolean;
     toggleModal(modalState: boolean): void;
 }
 
-const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, toggleModal }) => {
+const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, toggleModal, role }) => {
     const [matches, setMatches] = useState<Match[]>([]);
     const [editMatchId, setEditMatchId] = useState<string | null>(null);
 
@@ -96,7 +98,7 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
                                 </div>
                             </div>
                         </div>
-                        {isAuthenticated && (
+                        {isAuthenticated && role === Role.ADMIN && (
                             <div className={styles.containerListItemButtons}>
                                 <Button
                                     classes={styles.containerListItemButtonsBtn}
