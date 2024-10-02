@@ -137,7 +137,7 @@ const TeamPage: React.FC = () => {
                 isLoggedIn && (
                     <div className={styles.containerButtons}>
                         <Button label={'Edytuj nazwę'} onClick={handleEditTeamName} />
-                        <Button label={'Usuń drużynę'} onClick={handleDeleteTeam} />
+                        {role === Role.ADMIN && <Button label={'Usuń drużynę'} onClick={handleDeleteTeam} />}
                     </div>
                 )
             )}
