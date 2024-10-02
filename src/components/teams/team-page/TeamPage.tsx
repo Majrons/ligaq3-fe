@@ -9,7 +9,7 @@ import Button from '../../button/Button';
 import addTeamtheme from '../../../assets/styles/theme';
 import { TextField, ThemeProvider } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
-import { Role, TokenPayload } from '@/components/homepage/HomePage';
+import { Role, TokenPayload } from '../../homepage/HomePage';
 
 interface Player {
     _id: string;
