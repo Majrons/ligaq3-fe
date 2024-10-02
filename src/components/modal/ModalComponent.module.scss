@@ -4,7 +4,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    color: black;
+    color: white;
 
     &Container {
         position: absolute;
@@ -13,15 +13,16 @@
         transform: translate(-50%, -50%);
         width: 90%;
         height: 30%;
-        background-color: white;
+        border: 1px solid  rgba(255, 255, 255, 0.8);;
+        background-color: rgba(0, 0, 0, 0.8);
         display: flex;
         justify-content: center;
         align-items: flex-start;
 
         @include bp(l) {
-            width: 35%;
-            min-height: 45%;
+            width: auto;
             height: auto;
+            padding: 55px;
         }
 
         &Backdrop {

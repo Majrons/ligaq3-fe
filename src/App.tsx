@@ -14,7 +14,7 @@ const App: React.FC = () => {
                 <Menu />
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/team/:teamId" element={<TeamPage />} />
+                    <Route path="/team/:name" element={<TeamPage />} />
                 </Routes>
             </Router>
         </div>

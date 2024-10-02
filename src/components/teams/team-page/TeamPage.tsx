@@ -6,7 +6,7 @@ import { fetchPlayersByTeam, addPlayerToTeam, deletePlayer } from '../../../api/
 import { fetchMatchesByTeam } from '../../../api/api-matches';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../../button/Button';
-import addTeamtheme from '../../../assets/styles/theme';
+import { defaulTheme } from '../../../assets/styles/theme';
 import { TextField, ThemeProvider } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { Role, TokenPayload } from '../../homepage/HomePage';
@@ -117,7 +117,7 @@ const TeamPage: React.FC = () => {
             <h1 className={styles.containerTitle}>{teamName}</h1>
             {isEditing ? (
                 <>
-                    <ThemeProvider theme={addTeamtheme}>
+                    <ThemeProvider theme={defaulTheme}>
                         <div className={styles.containerInput}>
                             <TextField
                                 id="outlined-basic"
@@ -172,7 +172,7 @@ const TeamPage: React.FC = () => {
                     />
                     {showAddPlayerForm && (
                         <form className={styles.containerForm} onSubmit={handleAddPlayer}>
-                            <ThemeProvider theme={addTeamtheme}>
+                            <ThemeProvider theme={defaulTheme}>
                                 <div className={styles.containerInput}>
                                     <TextField
                                         id="outlined-basic"

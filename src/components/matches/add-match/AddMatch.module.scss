@@ -4,7 +4,19 @@
     align-items: center;
     flex-direction: column;
 
+    &Wrapper {
+        margin: 0 0 10px 0;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &Label {
+        font-size: 25px;
+        margin-right: 7px;
+    }
+
     &ChoosePlayers {
         display: flex;
+        margin: 18px 0;
     }
 }

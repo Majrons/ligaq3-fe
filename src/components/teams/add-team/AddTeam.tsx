@@ -3,7 +3,7 @@ import styles from './AddTeam.module.scss';
 import { addTeam } from '../../../api/api-teams';
 import Button from '../../button/Button';
 import { TextField, ThemeProvider } from '@mui/material';
-import addTeamtheme from '../../../assets/styles/theme';
+import { defaulTheme } from '../../../assets/styles/theme';
 
 interface AddTeamProps {
     onTeamAdded: () => void;
@@ -29,7 +29,7 @@ const AddTeam: React.FC<AddTeamProps> = ({ onTeamAdded }) => {
 
     return (
         <div className={styles.addTeam}>
-            <ThemeProvider theme={addTeamtheme}>
+            <ThemeProvider theme={defaulTheme}>
                 <div className={styles.addTeamInpotWrapper}>
                     <TextField
                         id="outlined-basic"

@@ -9,13 +9,19 @@
     height: 100%;
 
     h2 {
-        color: black;
+        color: white;
         margin-top: 0;
     }
 
-    .error {
+    &Error {
         color: red;
         margin-top: 10px;
+        position: absolute;
+        bottom: -50px;
+    }
+
+    &Btn {
+        width: 100%;
     }
 }
 
@@ -36,15 +42,5 @@
         border: 1px solid black;
         border-radius: 4px;
         justify-self: center;
-    }
-
-    &Button {
-        width: 50%;
-        height: 44px;
-        background: black;
-        border-radius: 4px;
-        color: white;
-        justify-self: center;
-        cursor: pointer;
     }
 }

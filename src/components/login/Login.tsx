@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import styles from './Login.module.scss';
 import { loginUser } from '../../api/api-auth';
 import ModalComponent from '../modal/ModalComponent';
+import Button from '../button/Button';
+import { modalTheme } from '../../assets/styles/theme';
+import { TextField, ThemeProvider } from '@mui/material';
 
 interface ILoginProps {
     isModalOpen: boolean;
@@ -29,27 +32,35 @@ const Login: React.FC<ILoginProps> = ({ isModalOpen, toggleModal }) => {
             <div className={styles.loginContainer}>
                 <h2>Zaloguj się</h2>
                 <form className={styles.form} onSubmit={handleLogin}>
-                    <input
-                        className={styles.formInput}
-                        type="text"
-                        placeholder="Nazwa użytkownika"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        required
-                    />
-                    <input
-                        className={styles.formInput}
-                        type="password"
-                        placeholder="Hasło"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        required
-                    />
-                    <button className={styles.formButton} type="submit">
-                        Zaloguj
-                    </button>
+                    <ThemeProvider theme={modalTheme}>
+                        <div className={styles.addTeamInpotWrapper}>
+                            <TextField
+                                id="outlined-basic"
+                                variant="outlined"
+                                className={styles.addTeamInput}
+                                label="Login"
+                                onChange={e => setUsername(e.target.value)}
+                                value={username}
+                                required
+                            />
+                        </div>
+                    </ThemeProvider>
+                    <ThemeProvider theme={modalTheme}>
+                        <div className={styles.addTeamInpotWrapper}>
+                            <TextField
+                                id="outlined-basic"
+                                variant="outlined"
+                                className={styles.addTeamInput}
+                                label="Hasło"
+                                onChange={e => setPassword(e.target.value)}
+                                value={password}
+                                required
+                            />
+                        </div>
+                    </ThemeProvider>
+                    <Button classes={styles.loginContainerBtn} label={'Zaloguj się'} type={'submit'} />
                 </form>
-                {error && <p className={styles.error}>{error}</p>}
+                {error && <p className={styles.loginContainerError}>{error}</p>}
             </div>
         </ModalComponent>
     );

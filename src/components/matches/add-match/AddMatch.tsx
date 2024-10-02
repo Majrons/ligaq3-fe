@@ -4,7 +4,7 @@ import ModalComponent from '../../modal/ModalComponent';
 import { fetchPlayersByTeam } from '../../../api/api-players';
 import { fetchTeams } from '../../../api/api-teams';
 import { addMatch } from '../../../api/api-matches';
-import addTeamtheme from '../../../assets/styles/theme';
+import { addMatchTheme } from '../../../assets/styles/theme';
 import { TextField, ThemeProvider } from '@mui/material';
 import Button from '../../button/Button';
 
@@ -138,46 +138,56 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
             <div className={styles.container}>
                 <form onSubmit={handleAddMatch}>
                     <h2>Dodaj nowy mecz</h2>
-                    <div>
-                        <label>Drużyna #1</label>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Drużyna #1</label>
                         <select value={homeTeam} onChange={e => setHomeTeam(e.target.value)} required>
                             <option value="">Wybierz drużynę</option>
-                            {teams?.map(team => (
-                                <option key={team._id} value={team._id}>
-                                    {team.name}
-                                </option>
-                            ))}
+                            {teams
+                                ?.filter(team => team.name !== awayTeam)
+                                .map(team => (
+                                    <option key={team._id} value={team._id}>
+                                        {team.name}
+                                    </option>
+                                ))}
                         </select>
                     </div>
-                    <div>
-                        <label>Drużyna #2</label>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Drużyna #2</label>
                         <select value={awayTeam} onChange={e => setAwayTeam(e.target.value)} required>
                             <option value="">Wybierz drużynę</option>
-                            {teams?.map(team => (
-                                <option key={team._id} value={team._id}>
-                                    {team.name}
-                                </option>
-                            ))}
+                            {teams
+                                ?.filter(team => team.name !== homeTeam)
+                                .map(team => (
+                                    <option key={team._id} value={team._id}>
+                                        {team.name}
+                                    </option>
+                                ))}
                         </select>
                     </div>
-                    <div>
-                        <label>Wynik {getTeamName(homeTeam)}</label>
-                        <input
-                            type="number"
-                            value={homeScore}
-                            onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : 0)}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Wynik {getTeamName(awayTeam)}</label>
-                        <ThemeProvider theme={addTeamtheme}>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Wynik {getTeamName(homeTeam)}</label>
+                        <ThemeProvider theme={addMatchTheme}>
                             <TextField
                                 id="outlined-basic"
                                 type="number"
                                 variant="outlined"
                                 className={styles.addTeamInput}
-                                label={`Wpisz wynik ${getTeamName(awayTeam)}`}
+                                label={'Wynik'}
+                                onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : 0)}
+                                value={homeScore}
+                                required
+                            />
+                        </ThemeProvider>
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Wynik {getTeamName(awayTeam)}</label>
+                        <ThemeProvider theme={addMatchTheme}>
+                            <TextField
+                                id="outlined-basic"
+                                type="number"
+                                variant="outlined"
+                                className={styles.addTeamInput}
+                                label={'Wynik'}
                                 onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : 0)}
                                 value={awayScore}
                                 required
@@ -187,7 +197,9 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                     <div className={styles.containerChoosePlayers}>
                         {homeTeam && (
                             <div>
-                                <h3>Wybierz graczy dla {getTeamName(homeTeam)}</h3>
+                                <h3>
+                                    Wybierz graczy <br /> {getTeamName(homeTeam)}
+                                </h3>
                                 {homePlayers?.map(player => (
                                     <div key={player._id}>
                                         <input
@@ -203,7 +215,9 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                         )}
                         {awayTeam && (
                             <div>
-                                <h3>Wybierz graczy dla {getTeamName(awayTeam)}</h3>
+                                <h3>
+                                    Wybierz graczy <br /> {getTeamName(awayTeam)}
+                                </h3>
                                 {awayPlayers?.map(player => (
                                     <div key={player._id}>
                                         <input
