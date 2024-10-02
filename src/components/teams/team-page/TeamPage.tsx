@@ -1,9 +1,13 @@
 // TeamPage.tsx
 import React, { useEffect, useState } from 'react';
+import styles from './TeamPage.module.scss';
 import { fetchTeam, updateTeam, deleteTeam } from '../../../api/api-teams';
 import { fetchPlayersByTeam, addPlayerToTeam, deletePlayer } from '../../../api/api-players';
 import { fetchMatchesByTeam } from '../../../api/api-matches';
 import { useParams, useNavigate } from 'react-router-dom';
+import Button from '../../button/Button';
+import addTeamtheme from '../../../assets/styles/theme';
+import { TextField, ThemeProvider } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { Role, TokenPayload } from '@/components/homepage/HomePage';
 
@@ -102,42 +106,53 @@ const TeamPage: React.FC = () => {
         }
     };
 
-    return (
-        <div>
-            <h1>
-                Szczegóły drużyny:
-                {isEditing ? (
-                    <>
-                        <input type="text" value={editedTeamName} onChange={e => setEditedTeamName(e.target.value)} />
-                        <button onClick={handleUpdateTeamName}>Zapisz</button>
-                        <button onClick={() => setIsEditing(false)}>Anuluj</button>
-                    </>
-                ) : (
-                    <>
-                        {teamName}
-                        {isLoggedIn && (
-                            <>
-                                <button
-                                    onClick={() => {
-                                        setIsEditing(true);
-                                        setEditedTeamName(teamName);
-                                    }}>
-                                    Edytuj nazwę
-                                </button>
-                                {role === Role.ADMIN && <button onClick={handleDeleteTeam}>Usuń drużynę</button>}
-                            </>
-                        )}
-                    </>
-                )}
-            </h1>
+    const handleEditTeamName = () => {
+        setIsEditing(true);
+        setEditedTeamName(teamName);
+    };
 
-            <h2>Lista graczy</h2>
-            <ul>
+    return (
+        <div className={styles.container}>
+            <h1 className={styles.containerTitle}>{teamName}</h1>
+            {isEditing ? (
+                <>
+                    <ThemeProvider theme={addTeamtheme}>
+                        <div className={styles.containerInput}>
+                            <TextField
+                                id="outlined-basic"
+                                variant="outlined"
+                                className={styles.addTeamInput}
+                                label="Wpisz nazwę"
+                                onChange={e => setEditedTeamName(e.target.value)}
+                                value={editedTeamName}
+                            />
+                        </div>
+                    </ThemeProvider>
+                    <div className={styles.containerButtons}>
+                        <Button label={'Zapisz'} onClick={handleUpdateTeamName} />
+                        <Button label={'Anuluj'} onClick={() => setIsEditing(false)} />
+                    </div>
+                </>
+            ) : (
+                isLoggedIn && (
+                    <div className={styles.containerButtons}>
+                        <Button label={'Edytuj nazwę'} onClick={handleEditTeamName} />
+                        <Button label={'Usuń drużynę'} onClick={handleDeleteTeam} />
+                    </div>
+                )
+            )}
+
+            <h2 className={styles.containerPlayersListTitle}>Lista graczy</h2>
+            <ul className={styles.containerPlayersList}>
                 {players.map(player => (
-                    <li key={player._id}>
+                    <li className={styles.containerPlayersListItem} key={player._id}>
                         {player.name}
                         {isLoggedIn && role === Role.ADMIN && (
-                            <button onClick={() => handleDeletePlayer(player._id)}>Usuń</button>
+                            <Button
+                                classes={styles.containerPlayersListItemBtn}
+                                label={'Usuń'}
+                                onClick={() => handleDeletePlayer(player._id)}
+                            />
                         )}
                     </li>
                 ))}
@@ -145,31 +160,41 @@ const TeamPage: React.FC = () => {
 
             {isLoggedIn && (
                 <>
-                    <button onClick={() => setShowAddPlayerForm(!showAddPlayerForm)}>
-                        {showAddPlayerForm ? 'Anuluj' : 'Dodaj gracza'}
-                    </button>
-
+                    <Button
+                        label={showAddPlayerForm ? 'Anuluj' : 'Dodaj gracza'}
+                        onClick={() => setShowAddPlayerForm(!showAddPlayerForm)}
+                    />
                     {showAddPlayerForm && (
-                        <form onSubmit={handleAddPlayer}>
-                            <input
-                                type="text"
-                                placeholder="Imię gracza"
-                                value={newPlayer.name}
-                                onChange={e => setNewPlayer({ name: e.target.value })}
-                                required
-                            />
-                            <button type="submit">Dodaj gracza</button>
+                        <form className={styles.containerForm} onSubmit={handleAddPlayer}>
+                            <ThemeProvider theme={addTeamtheme}>
+                                <div className={styles.containerInput}>
+                                    <TextField
+                                        id="outlined-basic"
+                                        variant="outlined"
+                                        className={styles.addTeamInput}
+                                        label="Imię gracza"
+                                        onChange={e => setNewPlayer({ name: e.target.value })}
+                                        value={newPlayer.name}
+                                        required
+                                    />
+                                </div>
+                            </ThemeProvider>
+                            <Button label={'Dodaj gracza'} type={'submit'} />
                         </form>
                     )}
                 </>
             )}
 
-            <h2>Wyniki meczów</h2>
-            <ul>
+            <h2 className={styles.containerMatchesListTitle}>Wyniki meczów</h2>
+            <ul className={styles.containerMatchesList}>
                 {matches.map(match => (
-                    <li key={match._id}>
-                        {match.homeTeam.name} {match.homeScore} : {match.awayScore} {match.awayTeam.name}
-                        <br /> Data: {new Date(match.date).toLocaleDateString()}
+                    <li className={styles.containerMatchesListItem} key={match._id}>
+                        <div>Data: {new Date(match.date).toLocaleDateString()}</div>
+                        <div className={styles.containerMatchesListItemDetails}>
+                            <div>{match.homeTeam.name}</div>
+                            <div>{match.homeScore}</div> : <div>{match.awayScore}</div>
+                            <div>{match.awayTeam.name}</div>
+                        </div>
                     </li>
                 ))}
             </ul>

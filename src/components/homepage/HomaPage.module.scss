@@ -25,12 +25,12 @@
                 font-size: 4rem;
             }
         }
-    }
 
-    &LoginButton {
-        height: 44px;
-        border-radius: 4px;
-        width: 150px;
-        cursor: pointer;
+        &Btns {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
     }
 }

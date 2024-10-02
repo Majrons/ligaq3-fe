@@ -1,4 +1,9 @@
-
 .addTeam {
     display: flex;
+    padding: 20px 0;
+    color: white;
+
+    &InpotWrapper {
+        margin-right: 20px;
+    }
 }

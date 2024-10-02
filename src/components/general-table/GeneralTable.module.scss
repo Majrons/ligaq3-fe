@@ -1,0 +1,13 @@
+@import '../../assets/styles/mixins';
+
+.resultTable {
+    @include bp-only(mobile) {
+        overflow-x: scroll;
+        -webkit-overflow-scrolling: touch;
+        grid-auto-flow: column;
+        grid-auto-columns: 42%;
+        min-height: 100%;
+        justify-content: flex-start;
+        width: 90vw;
+    }
+}

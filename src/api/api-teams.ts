@@ -22,7 +22,7 @@ export const addTeam = async (teamName: string) => {
 };
 
 export const updateTeam = async (id: string, name: string) => {
-    const response = await axiosInstance.put(`/teams/${id}`);
+    const response = await axiosInstance.put(`/teams/${id}`, { name });
     return response.data;
 };
 
