@@ -49,6 +49,7 @@ const Login: React.FC<ILoginProps> = ({ isModalOpen, toggleModal }) => {
                         <div className={styles.addTeamInpotWrapper}>
                             <TextField
                                 id="outlined-basic"
+                                type={'password'}
                                 variant="outlined"
                                 className={styles.addTeamInput}
                                 label="Hasło"
