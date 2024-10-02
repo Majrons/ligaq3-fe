@@ -1,0 +1,12 @@
+@import '../../../assets/styles/mixins';
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        object-fit: contain;
+        width: 100%;
+    }
+}
