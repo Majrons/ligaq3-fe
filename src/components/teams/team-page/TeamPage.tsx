@@ -4,6 +4,8 @@ import { fetchTeam, updateTeam, deleteTeam } from '../../../api/api-teams';
 import { fetchPlayersByTeam, addPlayerToTeam, deletePlayer } from '../../../api/api-players';
 import { fetchMatchesByTeam } from '../../../api/api-matches';
 import { useParams, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import { Role, TokenPayload } from '@/components/homepage/HomePage';
 
 interface Player {
     _id: string;
@@ -30,10 +32,15 @@ const TeamPage: React.FC = () => {
     const [newPlayer, setNewPlayer] = useState({ name: '' });
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [editedTeamName, setEditedTeamName] = useState<string>('');
+    const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        setIsLoggedIn(!!token);
+        if (token) {
+            const decoded: TokenPayload = jwtDecode(token);
+            setRole(decoded.role);
+            setIsLoggedIn(true);
+        }
     }, []);
 
     useEffect(() => {
@@ -117,7 +124,7 @@ const TeamPage: React.FC = () => {
                                     }}>
                                     Edytuj nazwę
                                 </button>
-                                <button onClick={handleDeleteTeam}>Usuń drużynę</button>
+                                {role === Role.ADMIN && <button onClick={handleDeleteTeam}>Usuń drużynę</button>}
                             </>
                         )}
                     </>
@@ -129,7 +136,9 @@ const TeamPage: React.FC = () => {
                 {players.map(player => (
                     <li key={player._id}>
                         {player.name}
-                        {isLoggedIn && <button onClick={() => handleDeletePlayer(player._id)}>Usuń</button>}
+                        {isLoggedIn && role === Role.ADMIN && (
+                            <button onClick={() => handleDeletePlayer(player._id)}>Usuń</button>
+                        )}
                     </li>
                 ))}
             </ul>

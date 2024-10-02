@@ -3,9 +3,18 @@ import styles from './HomaPage.module.scss';
 import GeneralTable from '../general-table/GeneralTable';
 import Login from '../login/Login';
 import { fetchTeams, resetLeagueTable } from '../../api/api-teams';
+import { jwtDecode } from 'jwt-decode';
 import AddTeam from '../teams/add-team/AddTeam';
 import AddMatch from '../../components/matches/add-match/AddMatch';
 import MatchList from '../matches/match-list/MatchList';
+
+export interface TokenPayload {
+    role: string;
+}
+
+export enum Role {
+    ADMIN = 'admin',
+}
 
 const HomePage: React.FC = () => {
     const [teams, setTeams] = useState([]);
@@ -14,6 +23,7 @@ const HomePage: React.FC = () => {
     const [isLoginModalOpen, setLoginModalOpen] = useState<boolean>(false);
     const [isAddMatchModalOpen, setAddMatchModalOpen] = useState<boolean>(false);
     const [isEditMatchModalOpen, setEditMatchModalOpen] = useState<boolean>(false);
+    const [role, setRole] = useState<string | null>(null);
 
     const toggleLoginModal = (modalState: boolean) => setLoginModalOpen(modalState);
     const toggleAddMatchModal = (modalState: boolean) => setAddMatchModalOpen(modalState);
@@ -22,6 +32,8 @@ const HomePage: React.FC = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
+            const decoded: TokenPayload = jwtDecode(token);
+            setRole(decoded.role);
             setIsAuthenticated(true);
         }
     }, []);
@@ -70,7 +82,9 @@ const HomePage: React.FC = () => {
                         </button>
                     )}
                     {isAuthenticated && <button onClick={() => toggleAddMatchModal(true)}>Dodaj mecz</button>}
-                    {isAuthenticated && <button onClick={() => resetTable()}>Wyczyść wyniki tabeli</button>}
+                    {isAuthenticated && role === Role.ADMIN && (
+                        <button onClick={() => resetTable()}>Wyczyść wyniki tabeli</button>
+                    )}
                 </div>
             </header>
 
