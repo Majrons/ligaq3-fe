@@ -39,3 +39,13 @@ export const resetLeagueTable = async () => {
         throw error;
     }
 };
+
+export const fetchTeamsByMatchId = async (matchId: string) => {
+    try {
+        const response = await axiosInstance.get(`/teams/match/${matchId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Błąd pobierania drużyn dla meczu:', error);
+        throw error;
+    }
+};

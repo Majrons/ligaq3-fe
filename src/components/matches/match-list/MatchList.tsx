@@ -1,7 +1,7 @@
 // MatchList.tsx
 import React, { useEffect, useState } from 'react';
 import styles from './MatchList.module.scss';
-import EditMatch from '../edit-match/EditMatch';
+// import EditMatch from '../edit-match/EditMatch';
 import { deleteMatch, fetchAllMatches } from '../../../api/api-matches';
 import Button from '../../button/Button';
 import classnames from 'classnames';
@@ -25,9 +25,9 @@ interface MatchListProps {
     toggleModal(modalState: boolean): void;
 }
 
-const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, toggleModal, role }) => {
+const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, /*isModalOpen, toggleModal,*/ role }) => {
     const [matches, setMatches] = useState<Match[]>([]);
-    const [editMatchId, setEditMatchId] = useState<string | null>(null);
+    // const [editMatchId, setEditMatchId] = useState<string | null>(null);
 
     // Pobieranie listy meczów
     useEffect(() => {
@@ -52,6 +52,11 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
             console.error('Nie udało się usunąć meczu', error);
         }
     };
+
+    // const handlEdit = (matchId: string) => {
+    //     toggleModal(true);
+    //     setEditMatchId(matchId);
+    // };
 
     return (
         <div className={styles.container}>
@@ -100,11 +105,11 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
                         </div>
                         {isAuthenticated && role === Role.ADMIN && (
                             <div className={styles.containerListItemButtons}>
-                                <Button
-                                    classes={styles.containerListItemButtonsBtn}
-                                    onClick={() => setEditMatchId(match._id)}
-                                    label={'Edytuj'}
-                                />
+                                {/*<Button*/}
+                                {/*    classes={styles.containerListItemButtonsBtn}*/}
+                                {/*    onClick={() => handlEdit(match._id)}*/}
+                                {/*    label={'Edytuj'}*/}
+                                {/*/>*/}
                                 <Button
                                     classes={styles.containerListItemButtonsBtn}
                                     onClick={() => handleDeleteMatch(match._id)}
@@ -113,9 +118,9 @@ const MatchList: React.FC<MatchListProps> = ({ isAuthenticated, isModalOpen, tog
                             </div>
                         )}
 
-                        {editMatchId === match._id && (
-                            <EditMatch matchId={match._id} isModalOpen={isModalOpen} toggleModal={toggleModal} />
-                        )}
+                        {/*{editMatchId === match._id && (*/}
+                        {/*    <EditMatch matchId={match._id} isModalOpen={isModalOpen} toggleModal={toggleModal} />*/}
+                        {/*)}*/}
                     </li>
                 ))}
             </ul>

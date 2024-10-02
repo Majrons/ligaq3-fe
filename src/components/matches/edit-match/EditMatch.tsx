@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import ModalComponent from '../../modal/ModalComponent';
 import { fetchPlayersByTeam } from '../../../api/api-players';
-import { fetchTeams } from '../../../api/api-teams';
+import { fetchTeamsByMatchId } from '../../../api/api-teams';
 import { fetchMatch, updateMatch } from '../../../api/api-matches';
+import styles from './EditMatch.module.scss';
+import { addMatchTheme } from '../../../assets/styles/theme';
+import { TextField, ThemeProvider } from '@mui/material';
 
 interface IEditMatchProps {
     matchId: string;
@@ -18,49 +21,50 @@ interface Team {
 interface Player {
     _id: string;
     name: string;
-    teamId: string; // Dodano właściwość teamId
+    teamId: string;
 }
 
 const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModal }) => {
-    const [teams, setTeams] = useState<Team[]>([]);
-    const [players, setPlayers] = useState<Player[]>([]);
-    const [homeTeam, setHomeTeam] = useState<string>('');
-    const [awayTeam, setAwayTeam] = useState<string>('');
+    const [homeTeam, setHomeTeam] = useState<Team | null>(null);
+    const [awayTeam, setAwayTeam] = useState<Team | null>(null);
     const [homePlayers, setHomePlayers] = useState<string[]>([]);
     const [awayPlayers, setAwayPlayers] = useState<string[]>([]);
     const [homeScore, setHomeScore] = useState<number>(0);
     const [awayScore, setAwayScore] = useState<number>(0);
+    const [players, setPlayers] = useState<Player[]>([]);
 
-    // Pobieranie dostępnych drużyn i graczy
+    // Pobieranie drużyn na podstawie meczu
     useEffect(() => {
         const fetchTeamsAndPlayers = async () => {
             try {
-                const teamResponse = await fetchTeams();
-                setTeams(teamResponse.data);
+                const { homeTeam, awayTeam } = await fetchTeamsByMatchId(matchId);
+                setHomeTeam(homeTeam);
+                setAwayTeam(awayTeam);
 
-                const playerResponse = await fetchPlayersByTeam(teamResponse.data.id);
-                setPlayers(playerResponse.data);
+                // Pobierz graczy dla każdej z drużyn
+                const homePlayersResponse = await fetchPlayersByTeam(homeTeam._id);
+                const awayPlayersResponse = await fetchPlayersByTeam(awayTeam._id);
+
+                setPlayers([...homePlayersResponse, ...awayPlayersResponse]);
             } catch (error) {
                 console.error('Nie udało się pobrać drużyn lub graczy', error);
             }
         };
 
         fetchTeamsAndPlayers();
-    }, []);
+    }, [matchId]);
 
     // Pobieranie danych meczu
     useEffect(() => {
         const handleFetchMatch = async () => {
             try {
                 const response = await fetchMatch(matchId);
-                const { homeTeam, awayTeam, homeScore, awayScore, players: matchPlayers } = response.data;
+                const { homeScore, awayScore, homePlayers, awayPlayers } = response.data;
 
-                setHomeTeam(homeTeam);
-                setAwayTeam(awayTeam);
                 setHomeScore(homeScore);
                 setAwayScore(awayScore);
-                setHomePlayers(matchPlayers?.homePlayers || []);
-                setAwayPlayers(matchPlayers?.awayPlayers || []);
+                setHomePlayers(homePlayers || []);
+                setAwayPlayers(awayPlayers || []);
             } catch (error) {
                 console.error('Nie udało się pobrać danych meczu', error);
             }
@@ -76,7 +80,7 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
         e.preventDefault();
 
         try {
-            await updateMatch(matchId, homeTeam, awayTeam, homeScore, awayScore, homePlayers, awayPlayers);
+            await updateMatch(matchId, homeTeam!._id, awayTeam!._id, homeScore, awayScore, homePlayers, awayPlayers);
 
             alert('Mecz został zaktualizowany!');
             toggleModal(false);
@@ -87,83 +91,101 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
 
     return (
         <ModalComponent modalIsOpen={isModalOpen} closeModal={toggleModal}>
-            <form onSubmit={handleUpdateMatch}>
-                <h2>Edytuj mecz</h2>
-                <div>
-                    <label>Drużyna #1</label>
-                    <select value={homeTeam} onChange={e => setHomeTeam(e.target.value)} required>
-                        <option value="">Wybierz drużynę</option>
-                        {teams.map(team => (
-                            <option key={team._id} value={team._id}>
-                                {team.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label>Gracze drużyny #1</label>
-                    <select
-                        multiple
-                        value={homePlayers}
-                        onChange={e => setHomePlayers(Array.from(e.target.selectedOptions, option => option.value))}>
-                        {players
-                            .filter(player => player.teamId === homeTeam)
-                            .map(player => (
-                                <option key={player._id} value={player._id}>
-                                    {player.name}
+            <div className={styles.container}>
+                <form onSubmit={handleUpdateMatch}>
+                    <h2>Edytuj mecz</h2>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Drużyna #1</label>
+                        <select value={homeTeam?._id} onChange={e => setHomeTeam(homeTeam)} required>
+                            <option value="">Wybierz drużynę</option>
+                            {homeTeam && (
+                                <option key={homeTeam._id} value={homeTeam._id}>
+                                    {homeTeam.name}
                                 </option>
-                            ))}
-                    </select>
-                </div>
-                <div>
-                    <label>Drużyna #2</label>
-                    <select value={awayTeam} onChange={e => setAwayTeam(e.target.value)} required>
-                        <option value="">Wybierz drużynę</option>
-                        {teams.map(team => (
-                            <option key={team._id} value={team._id}>
-                                {team.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label>Gracze drużyny #2</label>
-                    <select
-                        multiple
-                        value={awayPlayers}
-                        onChange={e => setAwayPlayers(Array.from(e.target.selectedOptions, option => option.value))}>
-                        {players
-                            .filter(player => player.teamId === awayTeam)
-                            .map(player => (
-                                <option key={player._id} value={player._id}>
-                                    {player.name}
+                            )}
+                        </select>
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Gracze drużyny #1</label>
+                        <select
+                            multiple
+                            value={homePlayers}
+                            onChange={e =>
+                                setHomePlayers(Array.from(e.target.selectedOptions, option => option.value))
+                            }>
+                            {players
+                                .filter(player => player.teamId === homeTeam?._id)
+                                .map(player => (
+                                    <option key={player._id} value={player._id}>
+                                        {player.name}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Drużyna #2</label>
+                        <select value={awayTeam?._id} onChange={e => setAwayTeam(awayTeam)} required>
+                            <option value="">Wybierz drużynę</option>
+                            {awayTeam && (
+                                <option key={awayTeam._id} value={awayTeam._id}>
+                                    {awayTeam.name}
                                 </option>
-                            ))}
-                    </select>
-                </div>
-                <div>
-                    <label>Wynik {homeTeam}</label>
-                    <input
-                        type="number"
-                        value={homeScore}
-                        onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : 0)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Wynik {awayTeam}</label>
-                    <input
-                        type="number"
-                        value={awayScore}
-                        onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : 0)}
-                        required
-                    />
-                </div>
-                <div>
-                    <button type="submit">Zaktualizuj mecz</button>
-                    <button onClick={() => toggleModal(false)}>Anuluj</button>
-                </div>
-            </form>
+                            )}
+                        </select>
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Gracze drużyny #2</label>
+                        <select
+                            multiple
+                            value={awayPlayers}
+                            onChange={e =>
+                                setAwayPlayers(Array.from(e.target.selectedOptions, option => option.value))
+                            }>
+                            {players
+                                .filter(player => player.teamId === awayTeam?._id)
+                                .map(player => (
+                                    <option key={player._id} value={player._id}>
+                                        {player.name}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Wynik {homeTeam?.name}</label>
+                        <ThemeProvider theme={addMatchTheme}>
+                            <TextField
+                                id="outlined-basic"
+                                type="number"
+                                variant="outlined"
+                                className={styles.addTeamInput}
+                                label={'Wynik'}
+                                onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : 0)}
+                                value={homeScore}
+                                required
+                            />
+                        </ThemeProvider>
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Wynik {awayTeam?.name}</label>
+                        <ThemeProvider theme={addMatchTheme}>
+                            <TextField
+                                id="outlined-basic"
+                                type="number"
+                                variant="outlined"
+                                className={styles.addTeamInput}
+                                label={'Wynik'}
+                                onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : 0)}
+                                value={awayScore}
+                                required
+                            />
+                        </ThemeProvider>
+                    </div>
+                    <div>
+                        <button type="submit">Zaktualizuj mecz</button>
+                        <button onClick={() => toggleModal(false)}>Anuluj</button>
+                    </div>
+                </form>
+            </div>
         </ModalComponent>
     );
 };
