@@ -94,7 +94,7 @@ const HomePage: React.FC = () => {
                 ) : (
                     <>
                         <GeneralTable teams={teams} />
-                        {isAuthenticated && <AddTeam onTeamAdded={loadTeams} />}
+                        {isAuthenticated && role === Role.ADMIN && <AddTeam onTeamAdded={loadTeams} />}
                         <MatchList
                             role={role}
                             isAuthenticated={isAuthenticated}

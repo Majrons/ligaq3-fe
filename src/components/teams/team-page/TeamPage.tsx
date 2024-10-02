@@ -10,6 +10,7 @@ import addTeamtheme from '../../../assets/styles/theme';
 import { TextField, ThemeProvider } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { Role, TokenPayload } from '../../homepage/HomePage';
+import classnames from 'classnames';
 
 interface Player {
     _id: string;
@@ -134,10 +135,11 @@ const TeamPage: React.FC = () => {
                     </div>
                 </>
             ) : (
-                isLoggedIn && (
+                isLoggedIn &&
+                role === Role.ADMIN && (
                     <div className={styles.containerButtons}>
                         <Button label={'Edytuj nazwę'} onClick={handleEditTeamName} />
-                        {role === Role.ADMIN && <Button label={'Usuń drużynę'} onClick={handleDeleteTeam} />}
+                        <Button label={'Usuń drużynę'} onClick={handleDeleteTeam} />
                     </div>
                 )
             )}
@@ -145,7 +147,11 @@ const TeamPage: React.FC = () => {
             <h2 className={styles.containerPlayersListTitle}>Lista graczy</h2>
             <ul className={styles.containerPlayersList}>
                 {players.map(player => (
-                    <li className={styles.containerPlayersListItem} key={player._id}>
+                    <li
+                        className={classnames(styles.containerPlayersListItem, {
+                            [styles.containerPlayersListItemAdmin]: role === Role.ADMIN,
+                        })}
+                        key={player._id}>
                         {player.name}
                         {isLoggedIn && role === Role.ADMIN && (
                             <Button
@@ -158,7 +164,7 @@ const TeamPage: React.FC = () => {
                 ))}
             </ul>
 
-            {isLoggedIn && (
+            {isLoggedIn && role === Role.ADMIN && (
                 <>
                     <Button
                         label={showAddPlayerForm ? 'Anuluj' : 'Dodaj gracza'}
