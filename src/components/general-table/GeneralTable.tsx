@@ -32,24 +32,25 @@ const GeneralTable: React.FC<IGeneralTableProps> = ({ teams }) => {
         navigate(`/team/${teamId}`);
     };
 
-    // Oblicz średnią liczby rozegranych meczów
     const totalMatchesPlayed = teams.reduce((acc, team) => acc + team.matchesPlayed, 0);
     const averageMatchesPlayed = totalMatchesPlayed / teams.length;
     const requiredMatches = averageMatchesPlayed * 0.7;
 
-    // Filtruj drużyny spełniające kryterium i sortuj je
     const sortedTeams = [...teams].sort((a, b) => {
         const winPercentageA = a.matchesPlayed ? a.wins / a.matchesPlayed : 0;
         const winPercentageB = b.matchesPlayed ? b.wins / b.matchesPlayed : 0;
 
-        // Uwzględnij drużyny, które spełniają kryterium udziału w 70% średniej rozegranych meczów
         const aEligible = a.matchesPlayed >= requiredMatches;
         const bEligible = b.matchesPlayed >= requiredMatches;
 
         if (aEligible && !bEligible) return -1;
         if (!aEligible && bEligible) return 1;
 
-        return winPercentageB - winPercentageA;
+        if (winPercentageA !== winPercentageB) {
+            return winPercentageB - winPercentageA;
+        }
+
+        return b.wins - a.wins;
     });
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({

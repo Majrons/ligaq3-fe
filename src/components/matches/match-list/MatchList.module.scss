@@ -126,10 +126,12 @@
 
             &Home {
                 align-items: flex-start;
+                text-align: start;
             }
 
             &Away {
                 align-items: flex-end;
+                text-align: end;
             }
         }
     }
