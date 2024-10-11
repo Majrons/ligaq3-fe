@@ -46,11 +46,11 @@ const GeneralTable: React.FC<IGeneralTableProps> = ({ teams }) => {
         if (aEligible && !bEligible) return -1;
         if (!aEligible && bEligible) return 1;
 
-        if (winPercentageA !== winPercentageB) {
-            return winPercentageB - winPercentageA;
+        if (winPercentageA === winPercentageB) {
+            return b.wins - a.wins;
         }
 
-        return b.wins - a.wins;
+        return winPercentageB - winPercentageA;
     });
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
