@@ -70,7 +70,7 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
         };
 
         fetchMatchData();
-    }, []);
+    }, [matchId]);
 
     const handleUpdateMatch = async (e: React.FormEvent) => {
         e.preventDefault();

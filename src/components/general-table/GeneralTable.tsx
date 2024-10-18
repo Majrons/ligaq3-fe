@@ -19,24 +19,28 @@ interface Team {
     losses: number;
     wins: number;
     matchesPlayed: number;
+    gameType: string;
 }
 
 interface IGeneralTableProps {
     teams: Team[];
+    gameType?: string;
 }
 
-const GeneralTable: React.FC<IGeneralTableProps> = ({ teams }) => {
+const GeneralTable: React.FC<IGeneralTableProps> = ({ teams, gameType }) => {
     const navigate = useNavigate();
 
     const goToTeamPage = (teamId: string) => {
         navigate(`/team/${teamId}`);
     };
 
-    const totalMatchesPlayed = teams.reduce((acc, team) => acc + team.matchesPlayed, 0);
-    const averageMatchesPlayed = totalMatchesPlayed / teams.length;
+    const filteredTeams = gameType ? teams.filter(team => team.gameType === gameType) : teams;
+
+    const totalMatchesPlayed = filteredTeams.reduce((acc, team) => acc + team.matchesPlayed, 0);
+    const averageMatchesPlayed = totalMatchesPlayed / filteredTeams.length;
     const requiredMatches = averageMatchesPlayed * 0.7;
 
-    const sortedTeams = [...teams].sort((a, b) => {
+    const sortedTeams = [...filteredTeams].sort((a, b) => {
         const winPercentageA = a.matchesPlayed ? a.wins / a.matchesPlayed : 0;
         const winPercentageB = b.matchesPlayed ? b.wins / b.matchesPlayed : 0;
 
@@ -73,7 +77,6 @@ const GeneralTable: React.FC<IGeneralTableProps> = ({ teams }) => {
         '&:nth-of-type(even)': {
             backgroundColor: 'rgba(30, 30, 30, 1)',
         },
-        // hide last border
         '&:last-child td, &:last-child th': {
             border: 0,
         },
@@ -82,7 +85,7 @@ const GeneralTable: React.FC<IGeneralTableProps> = ({ teams }) => {
     return (
         <div className={styles.resultTable}>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700 }} aria-label="Liga Q3">
+                <Table sx={{ minWidth: 700 }} aria-label="Tabela Ogólna">
                     <TableHead>
                         <TableRow>
                             <StyledTableCell>#</StyledTableCell>

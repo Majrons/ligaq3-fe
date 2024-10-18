@@ -98,6 +98,8 @@ const HomePage: React.FC = () => {
                     <>
                         <GeneralTable teams={teams} />
                         {isAuthenticated && role === Role.ADMIN && <AddTeam onTeamAdded={loadTeams} />}
+                        <GeneralTable teams={teams} gameType={'CTF'} />
+                        <GeneralTable teams={teams} gameType={'TDM'} />
                         <MatchList
                             handleRefreshMatchList={handleRefreshMatchList}
                             shouldRefreshMatchList={shouldRefreshMatchList}

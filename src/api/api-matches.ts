@@ -96,3 +96,13 @@ export const deleteMatch = async (matchId: string) => {
         throw error;
     }
 };
+
+export const fetchTdmMatches = async () => {
+    const response = await axiosInstance.get('/matches/tdm');
+    return response.data;
+};
+
+export const fetchCtfMatches = async () => {
+    const response = await axiosInstance.get('/matches/ctf');
+    return response.data;
+};
