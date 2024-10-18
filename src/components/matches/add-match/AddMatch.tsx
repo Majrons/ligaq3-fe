@@ -88,6 +88,8 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
         setSelectedAwayPlayers([]);
     };
 
+    const gameTypeOptions = [{ type: 'TDM' }, { type: 'CTF' }];
+
     // Funkcja do dodawania meczu
     const handleAddMatch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -190,6 +192,14 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                             value={gameType}
                             onChange={e => setGameType(e.target.value)}
                             required>
+                            <option value="">Wybierz typ rozgrywki</option>
+                            {gameTypeOptions
+                                .filter(type => type.type !== gameType)
+                                .map(type => (
+                                    <option key={type.type} value={type.type}>
+                                        {type.type}
+                                    </option>
+                                ))}
                             <option value="TDM">TDM</option>
                             <option value="CTF">CTF</option>
                         </select>
