@@ -11,6 +11,7 @@ import Button from '../../button/Button';
 interface IAddMatchProps {
     isModalOpen: boolean;
     toggleModal: (modalState: boolean) => void;
+    refreshMatchList(shouldRefresh: boolean): void;
 }
 
 interface Team {
@@ -23,12 +24,13 @@ interface Player {
     name: string;
 }
 
-const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
+const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshMatchList }) => {
     const [teams, setTeams] = useState<Team[]>([]);
     const [homeTeam, setHomeTeam] = useState<string>('');
     const [awayTeam, setAwayTeam] = useState<string>('');
     const [homeScore, setHomeScore] = useState<number | string>(0);
     const [awayScore, setAwayScore] = useState<number | string>(0);
+    const [gameType, setGameType] = useState<string>('');
     const [homePlayers, setHomePlayers] = useState<Player[]>([]);
     const [awayPlayers, setAwayPlayers] = useState<Player[]>([]);
     const [selectedHomePlayers, setSelectedHomePlayers] = useState<string[]>([]);
@@ -101,11 +103,20 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
         }
 
         try {
-            await addMatch(homeTeam, awayTeam, homeScore, awayScore, selectedHomePlayers, selectedAwayPlayers);
+            await addMatch(
+                homeTeam,
+                awayTeam,
+                homeScore,
+                awayScore,
+                gameType,
+                selectedHomePlayers,
+                selectedAwayPlayers
+            );
 
             alert('Mecz został dodany!');
             // Resetowanie formularza
             clearForm();
+            refreshMatchList(true);
         } catch (error) {
             console.error('Nie udało się dodać meczu', error);
         }
@@ -136,11 +147,15 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
     return (
         <ModalComponent modalIsOpen={isModalOpen} closeModal={toggleModal}>
             <div className={styles.container}>
-                <form onSubmit={handleAddMatch}>
+                <form className={styles.containerForm} onSubmit={handleAddMatch}>
                     <h2>Dodaj nowy mecz</h2>
                     <div className={styles.containerWrapper}>
                         <label className={styles.containerLabel}>Drużyna #1</label>
-                        <select value={homeTeam} onChange={e => setHomeTeam(e.target.value)} required>
+                        <select
+                            className={styles.containerSelect}
+                            value={homeTeam}
+                            onChange={e => setHomeTeam(e.target.value)}
+                            required>
                             <option value="">Wybierz drużynę</option>
                             {teams
                                 ?.filter(team => team.name !== awayTeam)
@@ -153,7 +168,11 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                     </div>
                     <div className={styles.containerWrapper}>
                         <label className={styles.containerLabel}>Drużyna #2</label>
-                        <select value={awayTeam} onChange={e => setAwayTeam(e.target.value)} required>
+                        <select
+                            className={styles.containerSelect}
+                            value={awayTeam}
+                            onChange={e => setAwayTeam(e.target.value)}
+                            required>
                             <option value="">Wybierz drużynę</option>
                             {teams
                                 ?.filter(team => team.name !== homeTeam)
@@ -162,6 +181,17 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                                         {team.name}
                                     </option>
                                 ))}
+                        </select>
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Co było grane</label>
+                        <select
+                            className={styles.containerSelect}
+                            value={gameType}
+                            onChange={e => setGameType(e.target.value)}
+                            required>
+                            <option value="TDM">TDM</option>
+                            <option value="CTF">CTF</option>
                         </select>
                     </div>
                     <div className={styles.containerWrapper}>
@@ -246,7 +276,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                             </div>
                         )}
                     </div>
-                    <div>
+                    <div className={styles.containerButtons}>
                         <Button label={'Dodaj mecz'} type={'submit'} />
                         <Button label={'Anuluj'} onClick={handleCancel} />
                     </div>

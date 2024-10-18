@@ -30,6 +30,11 @@
             display: flex;
             flex-direction: column;
 
+            &Title {
+                display: flex;
+                justify-content: space-between;
+            }
+
             &Date {
                 display: flex;
                 font-size: 1.2rem;

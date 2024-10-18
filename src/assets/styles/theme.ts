@@ -19,6 +19,9 @@ export const defaulTheme = createTheme({
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
+                    '& .MuiInputLabel-root': {
+                        zIndex: 0,
+                    },
                     '& .MuiOutlinedInput-notchedOutline': {
                         borderColor: 'rgba(255, 255, 255, 0.5)',
                     },

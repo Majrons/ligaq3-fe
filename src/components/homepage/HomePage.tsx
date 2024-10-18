@@ -25,6 +25,7 @@ const HomePage: React.FC = () => {
     const [isAddMatchModalOpen, setAddMatchModalOpen] = useState<boolean>(false);
     const [isEditMatchModalOpen, setEditMatchModalOpen] = useState<boolean>(false);
     const [role, setRole] = useState<string | null>(null);
+    const [shouldRefreshMatchList, setShouldRefreshMatchList] = useState<boolean>(false);
 
     const toggleLoginModal = (modalState: boolean) => setLoginModalOpen(modalState);
     const toggleAddMatchModal = (modalState: boolean) => setAddMatchModalOpen(modalState);
@@ -67,6 +68,8 @@ const HomePage: React.FC = () => {
         }
     };
 
+    const handleRefreshMatchList = (shouldRefresh: boolean) => setShouldRefreshMatchList(shouldRefresh);
+
     useEffect(() => {
         loadTeams();
     }, []);
@@ -96,6 +99,8 @@ const HomePage: React.FC = () => {
                         <GeneralTable teams={teams} />
                         {isAuthenticated && role === Role.ADMIN && <AddTeam onTeamAdded={loadTeams} />}
                         <MatchList
+                            handleRefreshMatchList={handleRefreshMatchList}
+                            shouldRefreshMatchList={shouldRefreshMatchList}
                             role={role}
                             isAuthenticated={isAuthenticated}
                             isModalOpen={isEditMatchModalOpen}
@@ -103,7 +108,11 @@ const HomePage: React.FC = () => {
                         />
                         {!isAuthenticated && <Login isModalOpen={isLoginModalOpen} toggleModal={toggleLoginModal} />}
                         {isAuthenticated && (
-                            <AddMatch isModalOpen={isAddMatchModalOpen} toggleModal={toggleAddMatchModal} />
+                            <AddMatch
+                                isModalOpen={isAddMatchModalOpen}
+                                toggleModal={toggleAddMatchModal}
+                                refreshMatchList={handleRefreshMatchList}
+                            />
                         )}
                     </>
                 )}

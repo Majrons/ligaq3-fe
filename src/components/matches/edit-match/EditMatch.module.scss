@@ -2,135 +2,44 @@
 
 .container {
     display: flex;
-    width: 100%;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    width: 100%;
 
-    &Title {
-        font-size: 2rem;
-    }
-
-    &List {
-        list-style: none;
+    &Form {
         width: 100%;
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 25px;
-        padding: 0 10px;
-
-        @include bp(l) {
-            padding: 0 45px;
-            gap: 50px 35px;
-            max-width: 1200px;
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        &Item {
-            display: flex;
-            flex-direction: column;
-
-            &Date {
-                display: flex;
-                font-size: 1.2rem;
-
-                &Title {
-                    font-weight: bold;
-                    margin-right: 20px;
-                }
-            }
-
-            &Buttons {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 5px;
-
-                &Btn {
-                    height: 27px;
-                    width: 70px;
-                }
-            }
-        }
     }
 
-    &Match {
+    &Wrapper {
+        margin: 0 0 20px 0;
         display: flex;
-        width: 100%;
         justify-content: space-between;
-
-        &Score {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            margin: 0;
-
-            @include bp(l) {
-                margin: 0 25px;
-            }
-
-            &Divider {
-                height: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                font-size: 1.5rem;
-                padding: 0 15px;
-
-                @include bp(l) {
-                    font-size: 3rem;
-                }
-            }
-        }
     }
 
-    &Team {
-        display: flex;
-        flex-direction: column;
+    &Label {
+        font-size: 25px;
+        margin-right: 7px;
         flex: 1;
+        display: flex;
+        align-items: center;
+    }
 
-        &Name {
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-            padding-bottom: 8px;
+    &Select {
+        width: 100%;
+        height: 44px;
+        flex: 1;
+    }
 
-            &Home {
-                justify-content: flex-start;
-            }
+    &ChoosePlayers {
+        display: flex;
+        margin: 18px 0;
+        justify-content: space-between;
+    }
 
-            &Away {
-                justify-content: flex-end;
-                text-align: end;
-            }
-        }
-
-        &Score {
-            font-size: 1.5rem;
-
-            @include bp(l) {
-                font-size: 3rem;
-            }
-        }
-
-        &Players {
-            display: flex;
-            flex-direction: column;
-
-            p {
-                padding: 0
-            }
-
-            &Home {
-                align-items: flex-start;
-            }
-
-            &Away {
-                align-items: flex-end;
-            }
-        }
+    &Buttons {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
     }
 }

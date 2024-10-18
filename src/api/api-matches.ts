@@ -38,6 +38,7 @@ export const addMatch = async (
     awayTeam: string,
     homeScore: number | string,
     awayScore: number | string,
+    gameType: string,
     homePlayers: string[],
     awayPlayers: string[]
 ) => {
@@ -47,6 +48,7 @@ export const addMatch = async (
             awayTeam,
             homeScore,
             awayScore,
+            gameType,
             homePlayers,
             awayPlayers,
         });
@@ -62,8 +64,9 @@ export const updateMatch = async (
     matchId: string,
     homeTeam: string,
     awayTeam: string,
-    homeScore: number,
-    awayScore: number,
+    homeScore: number | string,
+    awayScore: number | string,
+    gameType: string,
     homePlayers: string[],
     awayPlayers: string[]
 ) => {
@@ -73,6 +76,7 @@ export const updateMatch = async (
             awayTeam,
             homeScore,
             awayScore,
+            gameType,
             homePlayers,
             awayPlayers,
         });
