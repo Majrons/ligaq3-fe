@@ -48,7 +48,6 @@ const MatchList: React.FC<MatchListProps> = ({
         }
     };
 
-    // Pobieranie listy meczów
     useEffect(() => {
         fetchMatches();
     }, []);
@@ -58,9 +57,8 @@ const MatchList: React.FC<MatchListProps> = ({
             fetchMatches();
             handleRefreshMatchList(false);
         }
-    }, [shouldRefreshMatchList]);
+    }, [shouldRefreshMatchList, handleRefreshMatchList]);
 
-    // Funkcja usuwania meczu
     const handleDeleteMatch = async (matchId: string) => {
         try {
             await deleteMatch(matchId);

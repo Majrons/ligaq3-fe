@@ -68,7 +68,9 @@ const HomePage: React.FC = () => {
         }
     };
 
-    const handleRefreshMatchList = (shouldRefresh: boolean) => setShouldRefreshMatchList(shouldRefresh);
+    const handleRefreshMatchList = React.useCallback((shouldRefresh: boolean) => {
+        setShouldRefreshMatchList(shouldRefresh);
+    }, []);
 
     useEffect(() => {
         loadTeams();
