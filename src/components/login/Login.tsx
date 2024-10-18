@@ -33,7 +33,7 @@ const Login: React.FC<ILoginProps> = ({ isModalOpen, toggleModal }) => {
                 <h2>Zaloguj się</h2>
                 <form className={styles.form} onSubmit={handleLogin}>
                     <ThemeProvider theme={modalTheme}>
-                        <div className={styles.addTeamInpotWrapper}>
+                        <div className={styles.formInput}>
                             <TextField
                                 id="outlined-basic"
                                 variant="outlined"
@@ -46,7 +46,7 @@ const Login: React.FC<ILoginProps> = ({ isModalOpen, toggleModal }) => {
                         </div>
                     </ThemeProvider>
                     <ThemeProvider theme={modalTheme}>
-                        <div className={styles.addTeamInpotWrapper}>
+                        <div className={styles.formInput}>
                             <TextField
                                 id="outlined-basic"
                                 type={'password'}

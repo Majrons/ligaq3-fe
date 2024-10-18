@@ -27,8 +27,8 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
     const [teams, setTeams] = useState<Team[]>([]);
     const [homeTeam, setHomeTeam] = useState<string>('');
     const [awayTeam, setAwayTeam] = useState<string>('');
-    const [homeScore, setHomeScore] = useState<number>(0);
-    const [awayScore, setAwayScore] = useState<number>(0);
+    const [homeScore, setHomeScore] = useState<number | string>(0);
+    const [awayScore, setAwayScore] = useState<number | string>(0);
     const [homePlayers, setHomePlayers] = useState<Player[]>([]);
     const [awayPlayers, setAwayPlayers] = useState<Player[]>([]);
     const [selectedHomePlayers, setSelectedHomePlayers] = useState<string[]>([]);
@@ -173,7 +173,14 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                                 variant="outlined"
                                 className={styles.addTeamInput}
                                 label={'Wynik'}
-                                onChange={e => setHomeScore(e.target.value ? Number(e.target.value) : 0)}
+                                onFocus={() => setHomeScore('')}
+                                onBlur={() => setHomeScore(homeScore === '' ? 0 : homeScore)}
+                                onChange={e => {
+                                    const value = e.target.value;
+                                    if (!isNaN(Number(value))) {
+                                        setHomeScore(value === '' ? '' : Number(value));
+                                    }
+                                }}
                                 value={homeScore}
                                 required
                             />
@@ -188,7 +195,14 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal }) => {
                                 variant="outlined"
                                 className={styles.addTeamInput}
                                 label={'Wynik'}
-                                onChange={e => setAwayScore(e.target.value ? Number(e.target.value) : 0)}
+                                onFocus={() => setAwayScore('')}
+                                onBlur={() => setAwayScore(awayScore === '' ? 0 : awayScore)}
+                                onChange={e => {
+                                    const value = e.target.value;
+                                    if (!isNaN(Number(value))) {
+                                        setAwayScore(value === '' ? '' : Number(value));
+                                    }
+                                }}
                                 value={awayScore}
                                 required
                             />

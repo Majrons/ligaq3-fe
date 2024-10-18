@@ -36,8 +36,8 @@ export const fetchMatch = async (matchId: string) => {
 export const addMatch = async (
     homeTeam: string,
     awayTeam: string,
-    homeScore: number,
-    awayScore: number,
+    homeScore: number | string,
+    awayScore: number | string,
     homePlayers: string[],
     awayPlayers: string[]
 ) => {

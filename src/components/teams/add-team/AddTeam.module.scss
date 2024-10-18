@@ -1,7 +1,14 @@
+@import '../../../assets/styles/mixins';
+
 .addTeam {
     display: flex;
     padding: 20px 0;
     color: white;
+
+    @include bp-only(mobile) {
+        margin: 0 auto;
+        width: 90%
+    }
 
     &InpotWrapper {
         margin-right: 20px;
