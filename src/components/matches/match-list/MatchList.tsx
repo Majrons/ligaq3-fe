@@ -7,7 +7,7 @@ import Button from '../../button/Button';
 import classnames from 'classnames';
 import { Role } from '../../homepage/HomePage';
 
-interface Match {
+export interface Match {
     _id: string;
     homeTeam: { _id: string; name: string };
     awayTeam: { _id: string; name: string };
@@ -60,11 +60,18 @@ const MatchList: React.FC<MatchListProps> = ({
     }, [shouldRefreshMatchList, handleRefreshMatchList]);
 
     const handleDeleteMatch = async (matchId: string) => {
-        try {
-            await deleteMatch(matchId);
-            setMatches(matches.filter(match => match._id !== matchId));
-        } catch (error) {
-            console.error('Nie udało się usunąć meczu', error);
+        const confirmed = window.confirm('Czy na pewno chcesz usunąć mecz?');
+
+        if (confirmed) {
+            try {
+                await deleteMatch(matchId);
+                setMatches(matches.filter(match => match._id !== matchId));
+                handleRefreshMatchList(true);
+                alert('Mecz usuniety');
+            } catch (error) {
+                console.error('Nie udało się usunąć meczu', error);
+                alert(`Pisz do KreC!ka', ${error}`);
+            }
         }
     };
 

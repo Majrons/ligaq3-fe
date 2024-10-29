@@ -12,6 +12,7 @@ import {
     styled,
     tableCellClasses,
 } from '@mui/material';
+import { Match } from '@/components/matches/match-list/MatchList';
 
 interface Team {
     _id: string;
@@ -19,28 +20,45 @@ interface Team {
     losses: number;
     wins: number;
     matchesPlayed: number;
-    gameType: string;
 }
 
 interface IGeneralTableProps {
     teams: Team[];
+    matches: Match[];
     gameType?: string;
 }
 
-const GeneralTable: React.FC<IGeneralTableProps> = ({ teams, gameType }) => {
+const GeneralTable: React.FC<IGeneralTableProps> = ({ teams, matches, gameType }) => {
     const navigate = useNavigate();
 
-    const goToTeamPage = (teamId: string) => {
-        navigate(`/team/${teamId}`);
-    };
+    // Filtruj mecze na podstawie typu gry, jeśli jest podany
+    const filteredMatches = gameType ? matches.filter(match => match.gameType === gameType) : matches;
 
-    const filteredTeams = gameType ? teams.filter(team => team.gameType === gameType) : teams;
+    // Tworzenie mapy drużyn na podstawie wybranych meczów
+    const teamStats = teams.map(team => {
+        const teamMatches = filteredMatches.filter(
+            match => match.homeTeam._id === team._id || match.awayTeam._id === team._id
+        );
 
-    const totalMatchesPlayed = filteredTeams.reduce((acc, team) => acc + team.matchesPlayed, 0);
-    const averageMatchesPlayed = totalMatchesPlayed / filteredTeams.length;
+        const wins = teamMatches.reduce((acc, match) => {
+            const isHome = match.homeTeam._id === team._id;
+            const wonMatch = isHome ? match.homeScore > match.awayScore : match.awayScore > match.homeScore;
+            return acc + (wonMatch ? 1 : 0);
+        }, 0);
+
+        return {
+            ...team,
+            wins,
+            losses: teamMatches.length - wins,
+            matchesPlayed: teamMatches.length,
+        };
+    });
+
+    const totalMatchesPlayed = teamStats.reduce((acc, team) => acc + team.matchesPlayed, 0);
+    const averageMatchesPlayed = totalMatchesPlayed / teamStats.length;
     const requiredMatches = averageMatchesPlayed * 0.7;
 
-    const sortedTeams = [...filteredTeams].sort((a, b) => {
+    const sortedTeams = [...teamStats].sort((a, b) => {
         const winPercentageA = a.matchesPlayed ? a.wins / a.matchesPlayed : 0;
         const winPercentageB = b.matchesPlayed ? b.wins / b.matchesPlayed : 0;
 
@@ -105,7 +123,7 @@ const GeneralTable: React.FC<IGeneralTableProps> = ({ teams, gameType }) => {
                                 <StyledTableCell
                                     component="th"
                                     scope="row"
-                                    onClick={() => goToTeamPage(team._id)}
+                                    onClick={() => navigate(`/team/${team._id}`)}
                                     style={{
                                         cursor: 'pointer',
                                         color: 'white',

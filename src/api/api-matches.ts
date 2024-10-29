@@ -90,7 +90,8 @@ export const updateMatch = async (
 // Usuń mecz
 export const deleteMatch = async (matchId: string) => {
     try {
-        await axiosInstance.delete(`/matches/${matchId}`);
+        const response = await axiosInstance.delete(`/matches/${matchId}`);
+        return response.data;
     } catch (error) {
         console.error('Błąd usuwania meczu:', error);
         throw error;

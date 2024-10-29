@@ -6,8 +6,10 @@ import { fetchTeams, resetLeagueTable } from '../../api/api-teams';
 import { jwtDecode } from 'jwt-decode';
 import AddTeam from '../teams/add-team/AddTeam';
 import AddMatch from '../../components/matches/add-match/AddMatch';
-import MatchList from '../matches/match-list/MatchList';
+import MatchList, { Match } from '../matches/match-list/MatchList';
 import Button from '../button/Button';
+import { fetchAllMatches } from '../../api/api-matches';
+import classnames from 'classnames';
 
 export interface TokenPayload {
     role: string;
@@ -19,6 +21,7 @@ export enum Role {
 
 const HomePage: React.FC = () => {
     const [teams, setTeams] = useState([]);
+    const [matches, setMatches] = useState<Match[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isLoginModalOpen, setLoginModalOpen] = useState<boolean>(false);
@@ -26,6 +29,8 @@ const HomePage: React.FC = () => {
     const [isEditMatchModalOpen, setEditMatchModalOpen] = useState<boolean>(false);
     const [role, setRole] = useState<string | null>(null);
     const [shouldRefreshMatchList, setShouldRefreshMatchList] = useState<boolean>(false);
+    const [showCTFTable, setShowCTFTable] = useState<boolean>(false);
+    const [showTDMTable, setShowTDMTable] = useState<boolean>(false);
 
     const toggleLoginModal = (modalState: boolean) => setLoginModalOpen(modalState);
     const toggleAddMatchModal = (modalState: boolean) => setAddMatchModalOpen(modalState);
@@ -44,10 +49,15 @@ const HomePage: React.FC = () => {
         }
     }, []);
 
+    const handleShowTable = (gameType: string) =>
+        gameType === 'CTF' ? setShowCTFTable(!showCTFTable) : setShowTDMTable(!showTDMTable);
+
     const loadTeams = async () => {
         try {
-            const data = await fetchTeams();
-            setTeams(data);
+            const teamsData = await fetchTeams();
+            const matchData = await fetchAllMatches();
+            setTeams(teamsData);
+            setMatches(matchData);
         } catch (error) {
             console.error('Błąd pobierania drużyn:', error);
         } finally {
@@ -91,6 +101,7 @@ const HomePage: React.FC = () => {
                         <Button label={'Wyczyść wyniki tabeli'} onClick={() => resetTable()} />
                     )}
                 </div>
+                {isAuthenticated && role === Role.ADMIN && <AddTeam onTeamAdded={loadTeams} />}
             </header>
 
             <main>
@@ -98,10 +109,46 @@ const HomePage: React.FC = () => {
                     <p>Ładowanie tabeli wyników...</p>
                 ) : (
                     <>
-                        <GeneralTable teams={teams} />
-                        {isAuthenticated && role === Role.ADMIN && <AddTeam onTeamAdded={loadTeams} />}
-                        <GeneralTable teams={teams} gameType={'CTF'} />
-                        <GeneralTable teams={teams} gameType={'TDM'} />
+                        <div className={styles.generalTable}>
+                            <p className={styles.generalTableTitle}>Tabela Ogólna</p>
+                            <GeneralTable teams={teams} matches={matches} />
+                        </div>
+                        <div className={styles.generalTable}>
+                            <div onClick={() => handleShowTable('CTF')} className={styles.generalTableText}>
+                                <span className={styles.generalTableTitle}>Tabela CTF</span>
+                                <span
+                                    className={classnames(styles.generalTableChevron, {
+                                        [styles.generalTableChevronDown]: !showCTFTable,
+                                        [styles.generalTableChevronUp]: showCTFTable,
+                                    })}
+                                />
+                            </div>
+                            <div
+                                className={classnames(styles.generalTableContent, {
+                                    [styles.generalTableContentHidden]: !showCTFTable,
+                                    [styles.generalTableContentShow]: showCTFTable,
+                                })}>
+                                <GeneralTable teams={teams} matches={matches} gameType={'CTF'} />
+                            </div>
+                        </div>
+                        <div className={styles.generalTable}>
+                            <div onClick={() => handleShowTable('TDM')} className={styles.generalTableText}>
+                                <span className={styles.generalTableTitle}>Tabela TDM</span>
+                                <span
+                                    className={classnames(styles.generalTableChevron, {
+                                        [styles.generalTableChevronDown]: !showTDMTable,
+                                        [styles.generalTableChevronUp]: showTDMTable,
+                                    })}
+                                />
+                            </div>
+                            <div
+                                className={classnames(styles.generalTableContent, {
+                                    [styles.generalTableContentHidden]: !showTDMTable,
+                                    [styles.generalTableContentShow]: showTDMTable,
+                                })}>
+                                <GeneralTable teams={teams} matches={matches} gameType={'TDM'} />
+                            </div>
+                        </div>
                         <MatchList
                             handleRefreshMatchList={handleRefreshMatchList}
                             shouldRefreshMatchList={shouldRefreshMatchList}

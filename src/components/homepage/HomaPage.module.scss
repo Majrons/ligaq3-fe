@@ -34,3 +34,64 @@
         }
     }
 }
+
+.generalTable {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    margin: 20px auto;
+
+
+
+    &Title {
+        font-weight: bold;
+        font-size: 20px;
+        cursor: pointer;
+        margin: 25px 0 25px 25px;
+    }
+
+    &Chevron {
+        font-weight: bold;
+        font-size: 20px;
+        cursor: pointer;
+        position: relative;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+
+        &:after {
+            @include transition();
+            content: '>';
+            position: absolute;
+            top: 0;
+            left: 50%;
+        }
+
+        &Up {
+            &:after {
+                rotate: -90deg;
+            }
+        }
+
+        &Down {
+            &:after {
+                rotate: 90deg;
+            }
+        }
+    }
+
+    &Content {
+        display: flex;
+        @include transition();
+
+        &Hidden {
+            height: 0;
+            opacity: 0;
+        }
+
+        &Show {
+            height: auto;
+            opacity: 1;
+        }
+    }
+}

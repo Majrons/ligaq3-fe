@@ -27,7 +27,8 @@ export const updateTeam = async (id: string, name: string) => {
 };
 
 export const deleteTeam = async (id: string) => {
-    await axiosInstance.delete(`/teams/${id}`);
+    const response = await axiosInstance.delete(`/teams/${id}`);
+    return response.data;
 };
 
 export const resetLeagueTable = async () => {

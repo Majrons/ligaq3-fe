@@ -11,4 +11,8 @@
         width: 90vw;
         margin: 0 auto;
     }
+
+    @include bp(l) {
+        width: 100%;
+    }
 }

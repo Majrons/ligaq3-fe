@@ -100,8 +100,9 @@ const TeamPage: React.FC = () => {
 
     const handleDeleteTeam = async () => {
         try {
-            await deleteTeam(teamId || '');
-            navigate('/teams');
+            const response = await deleteTeam(teamId || '');
+            navigate('/');
+            window.alert(response);
         } catch (error) {
             console.error('Nie udało się usunąć drużyny', error);
         }
