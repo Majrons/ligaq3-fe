@@ -33,54 +33,37 @@ export const fetchMatch = async (matchId: string) => {
 };
 
 // Dodaj nowy mecz
-export const addMatch = async (
-    homeTeam: string,
-    awayTeam: string,
-    homeScore: number | string,
-    awayScore: number | string,
-    gameType: string,
-    homePlayers: string[],
-    awayPlayers: string[]
-) => {
+export const addMatch = async (formData: FormData) => {
     try {
-        const response = await axiosInstance.post('/matches', {
-            homeTeam,
-            awayTeam,
-            homeScore,
-            awayScore,
-            gameType,
-            homePlayers,
-            awayPlayers,
+        const response = await fetch('/api/matches', {
+            method: 'POST',
+            body: formData,
         });
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Błąd podczas dodawania meczu');
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error('Błąd dodawania meczu:', error);
+        console.error(error);
         throw error;
     }
 };
 
 // Aktualizuj mecz
-export const updateMatch = async (
-    matchId: string,
-    homeTeam: string,
-    awayTeam: string,
-    homeScore: number | string,
-    awayScore: number | string,
-    gameType: string,
-    homePlayers: string[],
-    awayPlayers: string[]
-) => {
+export const updateMatch = async (matchId: string, formData: FormData) => {
     try {
-        const response = await axiosInstance.put(`/matches/${matchId}`, {
-            homeTeam,
-            awayTeam,
-            homeScore,
-            awayScore,
-            gameType,
-            homePlayers,
-            awayPlayers,
+        const response = await fetch(`/api/matches/${matchId}`, {
+            method: 'PUT',
+            body: formData,
         });
-        return response.data;
+
+        if (!response.ok) {
+            throw new Error('Błąd podczas aktualizacji meczu');
+        }
+
+        return await response.json();
     } catch (error) {
         console.error('Błąd aktualizacji meczu:', error);
         throw error;

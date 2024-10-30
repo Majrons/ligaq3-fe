@@ -20,7 +20,7 @@ export const defaulTheme = createTheme({
             styleOverrides: {
                 root: {
                     '& .MuiInputLabel-root': {
-                        zIndex: 0,
+                        zIndex: '0',
                     },
                     '& .MuiOutlinedInput-notchedOutline': {
                         borderColor: 'rgba(255, 255, 255, 0.5)',
@@ -36,6 +36,7 @@ export const defaulTheme = createTheme({
                     },
                     '& MuiFormLabel-root': {
                         fontSize: '12px',
+                        zIndex: '0',
                     },
                 },
             },
