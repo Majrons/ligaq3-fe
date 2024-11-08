@@ -38,6 +38,8 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
     const [awayPlayers, setAwayPlayers] = useState<Player[]>([]);
     const [selectedHomePlayers, setSelectedHomePlayers] = useState<string[]>([]);
     const [selectedAwayPlayers, setSelectedAwayPlayers] = useState<string[]>([]);
+    const [screenshot1, setScreenshot1] = useState<File | null>(null);
+    const [screenshot2, setScreenshot2] = useState<File | null>(null);
 
     // Pobieranie drużyn i danych meczu
     useEffect(() => {
@@ -50,8 +52,8 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
                 setHomeTeam(homeTeam.name);
                 setAwayTeamID(awayTeam._id);
                 setAwayTeam(awayTeam.name);
-                setSelectedHomePlayers(homePlayers);
-                setSelectedAwayPlayers(awayPlayers);
+                setSelectedHomePlayers(homePlayers.map((p: Player) => p._id));
+                setSelectedAwayPlayers(awayPlayers.map((p: Player) => p._id));
                 setHomeScore(homeScore);
                 setAwayScore(awayScore);
                 setGameType(gameType);
@@ -75,17 +77,20 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
     const handleUpdateMatch = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const formData = new FormData();
+        formData.append('homeTeam', homeTeamID);
+        formData.append('awayTeam', awayTeamID);
+        formData.append('homeScore', String(homeScore));
+        formData.append('awayScore', String(awayScore));
+        formData.append('gameType', gameType);
+        formData.append('selectedHomePlayers', JSON.stringify(selectedHomePlayers));
+        formData.append('selectedAwayPlayers', JSON.stringify(selectedAwayPlayers));
+
+        if (screenshot1) formData.append('screenshot1', screenshot1);
+        if (screenshot2) formData.append('screenshot2', screenshot2);
+
         try {
-            await updateMatch(
-                matchId,
-                homeTeamID,
-                awayTeamID,
-                homeScore,
-                awayScore,
-                gameType,
-                selectedHomePlayers,
-                selectedAwayPlayers
-            );
+            await updateMatch(matchId, formData);
             alert('Mecz został zaktualizowany!');
             toggleModal(false);
             handleRefreshMatchList(true);
@@ -94,17 +99,11 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
         }
     };
 
-    const handlePlayerSelection = (team: string, playerName: string, selected: boolean) => {
+    const handlePlayerSelection = (team: string, playerId: string, selected: boolean) => {
         if (team === 'home') {
-            setSelectedHomePlayers([]);
-            setSelectedHomePlayers(prev =>
-                selected ? [...selectedHomePlayers, playerName] : prev.filter(name => name !== playerName)
-            );
+            setSelectedHomePlayers(prev => (selected ? [...prev, playerId] : prev.filter(id => id !== playerId)));
         } else {
-            setSelectedAwayPlayers([]);
-            setSelectedAwayPlayers(prev =>
-                selected ? [...selectedAwayPlayers, playerName] : prev.filter(name => name !== playerName)
-            );
+            setSelectedAwayPlayers(prev => (selected ? [...prev, playerId] : prev.filter(id => id !== playerId)));
         }
     };
 
@@ -117,20 +116,28 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
                         <label className={styles.containerLabel}>Drużyna #1</label>
                         <select
                             className={styles.containerSelect}
-                            value={homeTeam}
-                            onChange={e => setHomeTeam(e.target.value ? e.target.value : homeTeam)}
+                            value={homeTeamID}
+                            onChange={e => setHomeTeamID(e.target.value)}
                             required>
-                            <option value={homeTeam}>{homeTeam}</option>
+                            {teams.map(team => (
+                                <option key={team._id} value={team._id}>
+                                    {team.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className={styles.containerWrapper}>
                         <label className={styles.containerLabel}>Drużyna #2</label>
                         <select
                             className={styles.containerSelect}
-                            value={awayTeam}
-                            onChange={e => setAwayTeam(e.target.value ? e.target.value : awayTeam)}
+                            value={awayTeamID}
+                            onChange={e => setAwayTeamID(e.target.value)}
                             required>
-                            <option value={awayTeam}>{awayTeam}</option>
+                            {teams.map(team => (
+                                <option key={team._id} value={team._id}>
+                                    {team.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className={styles.containerWrapper}>
@@ -138,7 +145,7 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
                         <select
                             className={styles.containerSelect}
                             value={gameType}
-                            onChange={e => setGameType(e.target.value ? e.target.value : gameType)}
+                            onChange={e => setGameType(e.target.value)}
                             required>
                             <option value="TDM">TDM</option>
                             <option value="CTF">CTF</option>
@@ -189,42 +196,44 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
                         </ThemeProvider>
                     </div>
                     <div className={styles.containerChoosePlayers}>
-                        {homeTeam && (
-                            <div>
-                                <h3>
-                                    Wybierz graczy <br /> {teams.find(t => t._id === homeTeamID)?.name}
-                                </h3>
-                                {homePlayers?.map(player => (
-                                    <div key={player._id}>
-                                        <input
-                                            type="checkbox"
-                                            id={`home-${player._id}`}
-                                            checked={selectedHomePlayers.includes(player.name)}
-                                            onChange={e => handlePlayerSelection('home', player.name, e.target.checked)}
-                                        />
-                                        <label htmlFor={`home-${player._id}`}>{player.name}</label>
-                                    </div>
-                                ))}
+                        <h3>Wybierz graczy dla drużyny {homeTeam}</h3>
+                        {homePlayers.map(player => (
+                            <div key={player._id}>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedHomePlayers.includes(player._id)}
+                                    onChange={e => handlePlayerSelection('home', player._id, e.target.checked)}
+                                />
+                                <label>{player.name}</label>
                             </div>
-                        )}
-                        {awayTeam && (
-                            <div>
-                                <h3>
-                                    Wybierz graczy <br /> {teams.find(t => t._id === awayTeamID)?.name}
-                                </h3>
-                                {awayPlayers?.map(player => (
-                                    <div key={player._id}>
-                                        <input
-                                            type="checkbox"
-                                            id={`away-${player._id}`}
-                                            checked={selectedAwayPlayers.includes(player.name)}
-                                            onChange={e => handlePlayerSelection('away', player.name, e.target.checked)}
-                                        />
-                                        <label htmlFor={`away-${player._id}`}>{player.name}</label>
-                                    </div>
-                                ))}
+                        ))}
+                        <h3>Wybierz graczy dla drużyny {awayTeam}</h3>
+                        {awayPlayers.map(player => (
+                            <div key={player._id}>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedAwayPlayers.includes(player._id)}
+                                    onChange={e => handlePlayerSelection('away', player._id, e.target.checked)}
+                                />
+                                <label>{player.name}</label>
                             </div>
-                        )}
+                        ))}
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Screenshot #1</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={e => setScreenshot1(e.target.files ? e.target.files[0] : null)}
+                        />
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Screenshot #2</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={e => setScreenshot2(e.target.files ? e.target.files[0] : null)}
+                        />
                     </div>
                     <div className={styles.containerButtons}>
                         <Button label={'Zaktualizuj mecz'} type={'submit'} />

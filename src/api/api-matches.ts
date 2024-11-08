@@ -33,53 +33,20 @@ export const fetchMatch = async (matchId: string) => {
 };
 
 // Dodaj nowy mecz
-export const addMatch = async (
-    homeTeam: string,
-    awayTeam: string,
-    homeScore: number | string,
-    awayScore: number | string,
-    gameType: string,
-    homePlayers: string[],
-    awayPlayers: string[]
-) => {
+export const addMatch = async (formData: FormData) => {
     try {
-        const response = await axiosInstance.post('/matches', {
-            homeTeam,
-            awayTeam,
-            homeScore,
-            awayScore,
-            gameType,
-            homePlayers,
-            awayPlayers,
-        });
+        const response = await axiosInstance.post('/matches', formData);
         return response.data;
     } catch (error) {
-        console.error('Błąd dodawania meczu:', error);
+        console.error('Błąd podczas dodawania meczu:', error);
         throw error;
     }
 };
 
 // Aktualizuj mecz
-export const updateMatch = async (
-    matchId: string,
-    homeTeam: string,
-    awayTeam: string,
-    homeScore: number | string,
-    awayScore: number | string,
-    gameType: string,
-    homePlayers: string[],
-    awayPlayers: string[]
-) => {
+export const updateMatch = async (matchId: string, formData: FormData) => {
     try {
-        const response = await axiosInstance.put(`/matches/${matchId}`, {
-            homeTeam,
-            awayTeam,
-            homeScore,
-            awayScore,
-            gameType,
-            homePlayers,
-            awayPlayers,
-        });
+        const response = await axiosInstance.put(`/matches/${matchId}`, formData);
         return response.data;
     } catch (error) {
         console.error('Błąd aktualizacji meczu:', error);
