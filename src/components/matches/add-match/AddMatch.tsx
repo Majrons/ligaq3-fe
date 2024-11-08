@@ -116,8 +116,18 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
         formData.append('selectedHomePlayers', JSON.stringify(selectedHomePlayers));
         formData.append('selectedAwayPlayers', JSON.stringify(selectedAwayPlayers));
 
+        console.log({
+            gdzie: 'w handle add match',
+            screenshot1: screenshot1,
+            screenshot2: screenshot2,
+        });
+
         if (screenshot1) formData.append('screenshot1', screenshot1);
         if (screenshot2) formData.append('screenshot2', screenshot2);
+
+        for (let pair of (formData as any).entries()) {
+            console.log(`${pair[0]}:`, pair[1]);
+        }
 
         try {
             await addMatch(formData);
@@ -142,6 +152,13 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
         }
     };
 
+    React.useEffect(() => {
+        console.log({
+            screenshot1: screenshot1,
+            screenshot2: screenshot2,
+        });
+    }, [screenshot2, screenshot1]);
+
     return (
         <ModalComponent modalIsOpen={isModalOpen} closeModal={toggleModal}>
             <div className={styles.container}>
@@ -156,7 +173,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                             required>
                             <option value="">Wybierz drużynę</option>
                             {teams
-                                .filter(team => team.name !== awayTeam)
+                                .filter(team => team._id !== awayTeam)
                                 .map(team => (
                                     <option key={team._id} value={team._id}>
                                         {team.name}
@@ -173,7 +190,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                             required>
                             <option value="">Wybierz drużynę</option>
                             {teams
-                                .filter(team => team.name !== homeTeam)
+                                .filter(team => team._id !== homeTeam)
                                 .map(team => (
                                     <option key={team._id} value={team._id}>
                                         {team.name}
@@ -277,7 +294,13 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                         <input
                             type="file"
                             accept="image/*"
-                            onChange={e => setScreenshot1(e.target.files ? e.target.files[0] : null)}
+                            onChange={e => {
+                                if (e.target.files && e.target.files[0]) {
+                                    setScreenshot1(e.target.files[0]);
+                                } else {
+                                    setScreenshot1(null);
+                                }
+                            }}
                         />
                     </div>
                     <div className={styles.containerWrapper}>
@@ -285,7 +308,13 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                         <input
                             type="file"
                             accept="image/*"
-                            onChange={e => setScreenshot2(e.target.files ? e.target.files[0] : null)}
+                            onChange={e => {
+                                if (e.target.files && e.target.files[0]) {
+                                    setScreenshot2(e.target.files[0]);
+                                } else {
+                                    setScreenshot2(null);
+                                }
+                            }}
                         />
                     </div>
                     <div className={styles.containerButtons}>

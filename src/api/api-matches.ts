@@ -35,18 +35,10 @@ export const fetchMatch = async (matchId: string) => {
 // Dodaj nowy mecz
 export const addMatch = async (formData: FormData) => {
     try {
-        const response = await fetch('/api/matches', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error('Błąd podczas dodawania meczu');
-        }
-
-        return await response.json();
+        const response = await axiosInstance.post('/matches', formData);
+        return response.data;
     } catch (error) {
-        console.error(error);
+        console.error('Błąd podczas dodawania meczu:', error);
         throw error;
     }
 };
@@ -54,16 +46,8 @@ export const addMatch = async (formData: FormData) => {
 // Aktualizuj mecz
 export const updateMatch = async (matchId: string, formData: FormData) => {
     try {
-        const response = await fetch(`/api/matches/${matchId}`, {
-            method: 'PUT',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error('Błąd podczas aktualizacji meczu');
-        }
-
-        return await response.json();
+        const response = await axiosInstance.put(`/matches/${matchId}`, formData);
+        return response.data;
     } catch (error) {
         console.error('Błąd aktualizacji meczu:', error);
         throw error;
