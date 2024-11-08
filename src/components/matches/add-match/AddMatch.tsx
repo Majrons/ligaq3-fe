@@ -133,11 +133,15 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
         toggleModal(false);
     };
 
-    const handlePlayerSelection = (team: string, playerId: string, selected: boolean) => {
+    const handlePlayerSelection = (team: string, playerName: string, selected: boolean) => {
         if (team === 'home') {
-            setSelectedHomePlayers(prev => (selected ? [...prev, playerId] : prev.filter(id => id !== playerId)));
+            setSelectedHomePlayers(prev =>
+                selected ? [...prev, playerName] : prev.filter(name => name !== playerName)
+            );
         } else if (team === 'away') {
-            setSelectedAwayPlayers(prev => (selected ? [...prev, playerId] : prev.filter(id => id !== playerId)));
+            setSelectedAwayPlayers(prev =>
+                selected ? [...prev, playerName] : prev.filter(name => name !== playerName)
+            );
         }
     };
 
@@ -247,8 +251,8 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                                     <div key={player._id}>
                                         <input
                                             type="checkbox"
-                                            checked={selectedHomePlayers.includes(player._id)}
-                                            onChange={e => handlePlayerSelection('home', player._id, e.target.checked)}
+                                            checked={selectedHomePlayers.includes(player.name)}
+                                            onChange={e => handlePlayerSelection('home', player.name, e.target.checked)}
                                         />
                                         <label>{player.name}</label>
                                     </div>
@@ -262,8 +266,8 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                                     <div key={player._id}>
                                         <input
                                             type="checkbox"
-                                            checked={selectedAwayPlayers.includes(player._id)}
-                                            onChange={e => handlePlayerSelection('away', player._id, e.target.checked)}
+                                            checked={selectedAwayPlayers.includes(player.name)}
+                                            onChange={e => handlePlayerSelection('away', player.name, e.target.checked)}
                                         />
                                         <label>{player.name}</label>
                                     </div>

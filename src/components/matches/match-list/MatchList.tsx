@@ -105,9 +105,7 @@ const MatchList: React.FC<MatchListProps> = ({
                                             styles.containerTeamPlayers,
                                             styles.containerTeamPlayersHome
                                         )}>
-                                        {match.homePlayers.map((player, index) => (
-                                            <p key={index}>{player}</p>
-                                        ))}
+                                        {match.homePlayers?.map((player, index) => <p key={index}>{player}</p>)}
                                     </div>
                                 </div>
                                 <div className={styles.containerMatchScore}>
@@ -124,9 +122,7 @@ const MatchList: React.FC<MatchListProps> = ({
                                             styles.containerTeamPlayers,
                                             styles.containerTeamPlayersAway
                                         )}>
-                                        {match.awayPlayers.map((player, index) => (
-                                            <p key={index}>{player}</p>
-                                        ))}
+                                        {match.awayPlayers?.map((player, index) => <p key={index}>{player}</p>)}
                                     </div>
                                 </div>
                             </div>
