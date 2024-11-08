@@ -113,21 +113,10 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
         formData.append('homeScore', String(homeScore));
         formData.append('awayScore', String(awayScore));
         formData.append('gameType', gameType);
-        formData.append('selectedHomePlayers', JSON.stringify(selectedHomePlayers));
-        formData.append('selectedAwayPlayers', JSON.stringify(selectedAwayPlayers));
-
-        console.log({
-            gdzie: 'w handle add match',
-            screenshot1: screenshot1,
-            screenshot2: screenshot2,
-        });
-
+        formData.append('homePlayers', JSON.stringify(selectedHomePlayers));
+        formData.append('awayPlayers', JSON.stringify(selectedAwayPlayers));
         if (screenshot1) formData.append('screenshot1', screenshot1);
         if (screenshot2) formData.append('screenshot2', screenshot2);
-
-        for (let pair of (formData as any).entries()) {
-            console.log(`${pair[0]}:`, pair[1]);
-        }
 
         try {
             await addMatch(formData);
@@ -151,13 +140,6 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
             setSelectedAwayPlayers(prev => (selected ? [...prev, playerId] : prev.filter(id => id !== playerId)));
         }
     };
-
-    React.useEffect(() => {
-        console.log({
-            screenshot1: screenshot1,
-            screenshot2: screenshot2,
-        });
-    }, [screenshot2, screenshot1]);
 
     return (
         <ModalComponent modalIsOpen={isModalOpen} closeModal={toggleModal}>

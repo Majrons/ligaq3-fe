@@ -87,6 +87,7 @@
         &Hidden {
             height: 0;
             opacity: 0;
+            z-index: -1;
         }
 
         &Show {

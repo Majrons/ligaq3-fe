@@ -83,9 +83,8 @@ const EditMatch: React.FC<IEditMatchProps> = ({ matchId, isModalOpen, toggleModa
         formData.append('homeScore', String(homeScore));
         formData.append('awayScore', String(awayScore));
         formData.append('gameType', gameType);
-        formData.append('selectedHomePlayers', JSON.stringify(selectedHomePlayers));
-        formData.append('selectedAwayPlayers', JSON.stringify(selectedAwayPlayers));
-
+        formData.append('homePlayers', JSON.stringify(selectedHomePlayers));
+        formData.append('awayPlayers', JSON.stringify(selectedAwayPlayers));
         if (screenshot1) formData.append('screenshot1', screenshot1);
         if (screenshot2) formData.append('screenshot2', screenshot2);
 
