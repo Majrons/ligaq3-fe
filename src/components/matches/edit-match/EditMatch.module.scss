@@ -33,8 +33,23 @@
 
     &ChoosePlayers {
         display: flex;
-        margin: 18px 0;
+        margin: 25px 0;
         justify-content: space-between;
+        gap: 20px;
+
+        &Wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+
+            &Home {
+                justify-content: flex-start;
+            }
+
+            &Away {
+                justify-content: flex-end;
+            }
+        }
     }
 
     &Buttons {

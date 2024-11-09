@@ -37,6 +37,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
     const [selectedAwayPlayers, setSelectedAwayPlayers] = useState<string[]>([]);
     const [screenshot1, setScreenshot1] = useState<File | null>(null);
     const [screenshot2, setScreenshot2] = useState<File | null>(null);
+    const [screenshot3, setScreenshot3] = useState<File | null>(null);
 
     // Pobieranie drużyn
     useEffect(() => {
@@ -89,6 +90,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
         setSelectedAwayPlayers([]);
         setScreenshot1(null);
         setScreenshot2(null);
+        setScreenshot3(null);
     };
 
     const gameTypeOptions = [{ type: 'TDM' }, { type: 'CTF' }];
@@ -117,6 +119,7 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
         formData.append('awayPlayers', JSON.stringify(selectedAwayPlayers));
         if (screenshot1) formData.append('screenshot1', screenshot1);
         if (screenshot2) formData.append('screenshot2', screenshot2);
+        if (screenshot3) formData.append('screenshot3', screenshot3);
 
         try {
             await addMatch(formData);
@@ -299,6 +302,20 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                                     setScreenshot2(e.target.files[0]);
                                 } else {
                                     setScreenshot2(null);
+                                }
+                            }}
+                        />
+                    </div>
+                    <div className={styles.containerWrapper}>
+                        <label className={styles.containerLabel}>Screenshot #2</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={e => {
+                                if (e.target.files && e.target.files[0]) {
+                                    setScreenshot3(e.target.files[0]);
+                                } else {
+                                    setScreenshot3(null);
                                 }
                             }}
                         />

@@ -8,9 +8,9 @@
 
     &Container {
         position: absolute;
-        top: 35%;
+        top: 10%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translateX(-50%);
         width: 90%;
         height: auto;
         border: 1px solid  rgba(255, 255, 255, 0.8);;
