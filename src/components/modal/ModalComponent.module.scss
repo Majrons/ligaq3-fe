@@ -21,6 +21,12 @@
         padding: 30px 10px;
         z-index: 2;
 
+        @include bp-only(mobile) {
+            overflow: hidden;
+            overflow-y: auto;
+            max-height: 75%;
+        }
+
         @include bp(l) {
             width: auto;
             min-width: 450px;
