@@ -88,6 +88,19 @@
                 }
             }
         }
+
+        &Screens {
+            padding: 0 0 25px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+
+        &ScoreScreenContainer {
+            display: flex;
+            flex-direction: column;
+        }
     }
 
     &Team {
