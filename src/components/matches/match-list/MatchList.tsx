@@ -6,6 +6,8 @@ import { deleteMatch, fetchAllMatches } from '../../../api/api-matches';
 import Button from '../../button/Button';
 import classnames from 'classnames';
 import { Role } from '../../homepage/HomePage';
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 export interface Match {
     _id: string;
@@ -16,6 +18,9 @@ export interface Match {
     gameType: string;
     homePlayers: Array<string>;
     awayPlayers: Array<string>;
+    screenshot1: string;
+    screenshot2: string;
+    screenshot3: string;
     date: string;
 }
 
@@ -38,6 +43,15 @@ const MatchList: React.FC<MatchListProps> = ({
 }) => {
     const [matches, setMatches] = useState<Match[]>([]);
     const [editMatchId, setEditMatchId] = useState<string | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
+    const [photoIndex, setPhotoIndex] = useState(0);
+    const [images, setImages] = useState<string[]>([]);
+
+    const openGallery = (imagePaths: Array<string>) => {
+        setImages(imagePaths.map(path => `https://liga-q3.pl/${path}`));
+        setPhotoIndex(0);
+        setIsOpen(true);
+    };
 
     const fetchMatches = async () => {
         try {
@@ -108,10 +122,43 @@ const MatchList: React.FC<MatchListProps> = ({
                                         {match.homePlayers?.map((player, index) => <p key={index}>{player}</p>)}
                                     </div>
                                 </div>
-                                <div className={styles.containerMatchScore}>
-                                    <div className={styles.containerTeamScore}>{match.homeScore}</div>
-                                    <div className={styles.containerMatchScoreDivider}>{' : '}</div>
-                                    <span className={styles.containerTeamScore}>{match.awayScore}</span>
+                                <div className={styles.containerMatchScoreScreenContainer}>
+                                    <div className={styles.containerMatchScore}>
+                                        <div className={styles.containerTeamScore}>{match.homeScore}</div>
+                                        <div className={styles.containerMatchScoreDivider}>{' : '}</div>
+                                        <span className={styles.containerTeamScore}>{match.awayScore}</span>
+                                    </div>
+                                    {match.screenshot1 && (
+                                        <div className={styles.containerMatchScreens}>
+                                            {match.screenshot1 && (
+                                                <img
+                                                    src={`https://liga-q3.pl/${match.screenshot1}`}
+                                                    alt="Screenshot 1"
+                                                    loading="eager"
+                                                    style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
+                                                    onClick={() => openGallery([match.screenshot1, match.screenshot2])}
+                                                />
+                                            )}
+                                            {match.screenshot2 && (
+                                                <img
+                                                    src={`https://liga-q3.pl/${match.screenshot2}`}
+                                                    alt="Screenshot 2"
+                                                    loading="eager"
+                                                    style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
+                                                    onClick={() => openGallery([match.screenshot1, match.screenshot2])}
+                                                />
+                                            )}
+                                            {match.screenshot3 && (
+                                                <img
+                                                    src={`https://liga-q3.pl/${match.screenshot3}`}
+                                                    alt="Screenshot 2"
+                                                    loading="eager"
+                                                    style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
+                                                    onClick={() => openGallery([match.screenshot1, match.screenshot3])}
+                                                />
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className={styles.containerTeam}>
                                     <div className={classnames(styles.containerTeamName, styles.containerTeamNameAway)}>
@@ -152,6 +199,16 @@ const MatchList: React.FC<MatchListProps> = ({
                         </li>
                     ))}
             </ul>
+            {isOpen && (
+                <Lightbox
+                    mainSrc={images[photoIndex]}
+                    nextSrc={images[(photoIndex + 1) % images.length]}
+                    prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+                    onCloseRequest={() => setIsOpen(false)}
+                    onMovePrevRequest={() => setPhotoIndex((photoIndex + images.length - 1) % images.length)}
+                    onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % images.length)}
+                />
+            )}
         </div>
     );
 };
