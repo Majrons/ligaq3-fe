@@ -1,8 +1,8 @@
-// MatchList.tsx
 import React, { useEffect, useState } from 'react';
 import styles from './MatchList.module.scss';
 import EditMatch from '../edit-match/EditMatch';
 import { deleteMatch, fetchAllMatches } from '../../../api/api-matches';
+import { fetchTeams } from '../../../api/api-teams';
 import Button from '../../button/Button';
 import classnames from 'classnames';
 import { Role } from '../../homepage/HomePage';
@@ -24,6 +24,11 @@ export interface Match {
     date: string;
 }
 
+interface Team {
+    _id: string;
+    name: string;
+}
+
 interface MatchListProps {
     isAuthenticated: boolean;
     role: string | null;
@@ -42,28 +47,36 @@ const MatchList: React.FC<MatchListProps> = ({
     handleRefreshMatchList,
 }) => {
     const [matches, setMatches] = useState<Match[]>([]);
+    const [filteredMatches, setFilteredMatches] = useState<Match[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
+    const [activeFilter, setActiveFilter] = useState<string | null>(null);
     const [editMatchId, setEditMatchId] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [photoIndex, setPhotoIndex] = useState(0);
     const [images, setImages] = useState<string[]>([]);
 
-    const openGallery = (imagePaths: Array<string>) => {
-        setImages(imagePaths.map(path => `https://liga-q3.pl/${path}`));
-        setPhotoIndex(0);
-        setIsOpen(true);
-    };
-
     const fetchMatches = async () => {
         try {
             const response = await fetchAllMatches();
             setMatches(response);
+            setFilteredMatches(response);
         } catch (error) {
             console.error('Nie udało się pobrać meczów', error);
         }
     };
 
+    const fetchTeamsList = async () => {
+        try {
+            const response = await fetchTeams();
+            setTeams(response);
+        } catch (error) {
+            console.error('Nie udało się pobrać drużyn', error);
+        }
+    };
+
     useEffect(() => {
         fetchMatches();
+        fetchTeamsList();
     }, []);
 
     useEffect(() => {
@@ -73,6 +86,15 @@ const MatchList: React.FC<MatchListProps> = ({
         }
     }, [shouldRefreshMatchList, handleRefreshMatchList]);
 
+    const filterMatchesByTeam = (teamId: string | null) => {
+        setActiveFilter(teamId);
+        if (!teamId) {
+            setFilteredMatches(matches); // Pokaż wszystkie mecze
+        } else {
+            setFilteredMatches(matches.filter(match => match.homeTeam._id === teamId || match.awayTeam._id === teamId));
+        }
+    };
+
     const handleDeleteMatch = async (matchId: string) => {
         const confirmed = window.confirm('Czy na pewno chcesz usunąć mecz?');
 
@@ -81,7 +103,7 @@ const MatchList: React.FC<MatchListProps> = ({
                 await deleteMatch(matchId);
                 setMatches(matches.filter(match => match._id !== matchId));
                 handleRefreshMatchList(true);
-                alert('Mecz usuniety');
+                alert('Mecz usunięty');
             } catch (error) {
                 console.error('Nie udało się usunąć meczu', error);
                 alert(`Pisz do KreC!ka', ${error}`);
@@ -94,11 +116,32 @@ const MatchList: React.FC<MatchListProps> = ({
         setEditMatchId(matchId);
     };
 
+    const openGallery = (imagePaths: Array<string>) => {
+        setImages(imagePaths.map(path => `https://liga-q3.pl/${path}`));
+        setPhotoIndex(0);
+        setIsOpen(true);
+    };
+
     return (
         <div className={styles.container}>
             <h2 className={styles.containerTitle}>Lista meczy</h2>
+            <div className={styles.filterButtons}>
+                <button
+                    className={`${styles.filterButton} ${activeFilter === null ? styles.active : ''}`}
+                    onClick={() => filterMatchesByTeam(null)}>
+                    Pokaż wszystkie
+                </button>
+                {teams.map(team => (
+                    <button
+                        key={team._id}
+                        className={`${styles.filterButton} ${activeFilter === team._id ? styles.active : ''}`}
+                        onClick={() => filterMatchesByTeam(team._id)}>
+                        {team.name}
+                    </button>
+                ))}
+            </div>
             <ul className={styles.containerList}>
-                {matches
+                {filteredMatches
                     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                     .map(match => (
                         <li className={styles.containerListItem} key={match._id}>
