@@ -135,7 +135,7 @@ const MatchList: React.FC<MatchListProps> = ({
                                                     src={`https://liga-q3.pl/${match.screenshot1}`}
                                                     alt="Screenshot 1"
                                                     loading="eager"
-                                                    style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
+                                                    style={{ width: '60px', height: 'auto', cursor: 'pointer' }}
                                                     onClick={() =>
                                                         openGallery([
                                                             match.screenshot1,
@@ -150,7 +150,7 @@ const MatchList: React.FC<MatchListProps> = ({
                                                     src={`https://liga-q3.pl/${match.screenshot2}`}
                                                     alt="Screenshot 2"
                                                     loading="eager"
-                                                    style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
+                                                    style={{ width: '60px', height: 'auto', cursor: 'pointer' }}
                                                     onClick={() =>
                                                         openGallery([
                                                             match.screenshot1,
@@ -165,7 +165,7 @@ const MatchList: React.FC<MatchListProps> = ({
                                                     src={`https://liga-q3.pl/${match.screenshot3}`}
                                                     alt="Screenshot 2"
                                                     loading="eager"
-                                                    style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
+                                                    style={{ width: '60px', height: 'auto', cursor: 'pointer' }}
                                                     onClick={() =>
                                                         openGallery([
                                                             match.screenshot1,

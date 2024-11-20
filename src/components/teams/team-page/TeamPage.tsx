@@ -12,7 +12,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Role, TokenPayload } from '../../homepage/HomePage';
 import classnames from 'classnames';
 
-interface Player {
+export interface Player {
     _id: string;
     name: string;
 }
