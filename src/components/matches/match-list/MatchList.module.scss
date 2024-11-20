@@ -91,14 +91,10 @@
 
         &Screens {
             padding: 0 0 25px;
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            flex-wrap: wrap;
-
-            img {
-                flex: 30% 0;
-            }
+            flex: 1;
         }
 
         &ScoreScreenContainer {
