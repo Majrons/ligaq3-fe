@@ -136,7 +136,13 @@ const MatchList: React.FC<MatchListProps> = ({
                                                     alt="Screenshot 1"
                                                     loading="eager"
                                                     style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
-                                                    onClick={() => openGallery([match.screenshot1, match.screenshot2])}
+                                                    onClick={() =>
+                                                        openGallery([
+                                                            match.screenshot1,
+                                                            match.screenshot2,
+                                                            match.screenshot3,
+                                                        ])
+                                                    }
                                                 />
                                             )}
                                             {match.screenshot2 && (
@@ -145,7 +151,13 @@ const MatchList: React.FC<MatchListProps> = ({
                                                     alt="Screenshot 2"
                                                     loading="eager"
                                                     style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
-                                                    onClick={() => openGallery([match.screenshot1, match.screenshot2])}
+                                                    onClick={() =>
+                                                        openGallery([
+                                                            match.screenshot1,
+                                                            match.screenshot2,
+                                                            match.screenshot3,
+                                                        ])
+                                                    }
                                                 />
                                             )}
                                             {match.screenshot3 && (
@@ -154,7 +166,13 @@ const MatchList: React.FC<MatchListProps> = ({
                                                     alt="Screenshot 2"
                                                     loading="eager"
                                                     style={{ width: '50px', height: 'auto', cursor: 'pointer' }}
-                                                    onClick={() => openGallery([match.screenshot1, match.screenshot3])}
+                                                    onClick={() =>
+                                                        openGallery([
+                                                            match.screenshot1,
+                                                            match.screenshot2,
+                                                            match.screenshot3,
+                                                        ])
+                                                    }
                                                 />
                                             )}
                                         </div>
