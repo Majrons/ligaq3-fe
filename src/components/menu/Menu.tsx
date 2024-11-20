@@ -10,6 +10,9 @@ const Menu: React.FC = () => {
                 <li>
                     <Link to="/">Strona Główna</Link>
                 </li>
+                <li>
+                    <Link to="/teams">Teams</Link>
+                </li>
             </ul>
         </nav>
     );
