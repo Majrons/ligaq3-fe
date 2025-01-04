@@ -10,6 +10,7 @@ import MatchList, { Match } from '../matches/match-list/MatchList';
 import Button from '../button/Button';
 import { fetchAllMatches } from '../../api/api-matches';
 import classnames from 'classnames';
+import { archiveQuarter } from '../../api/api-archive';
 
 export interface TokenPayload {
     role: string;
@@ -17,6 +18,7 @@ export interface TokenPayload {
 
 export enum Role {
     ADMIN = 'admin',
+    UBER_ADMIN = 'uberAdmin',
 }
 
 const HomePage: React.FC = () => {
@@ -78,6 +80,34 @@ const HomePage: React.FC = () => {
         }
     };
 
+    const archiveQuarterData = async () => {
+        const quarter = prompt('Podaj nazwę kwartału (np. "Q1 2025", "Q2 2025"):');
+
+        if (!quarter) {
+            alert('Musisz podać nazwę kwartału!');
+            return;
+        }
+
+        const confirmed = window.confirm('Czy na pewno chcesz zarchiwizować ten kwartał?');
+
+        if (confirmed) {
+            try {
+                // Zamiast używać fetch bezpośrednio, wywołaj funkcję archiveQuarter
+                const response = await archiveQuarter(quarter, teams, matches);
+
+                if (!response.error) {
+                    alert(response.message || 'Kwartał został zarchiwizowany!');
+                    window.location.reload();
+                } else {
+                    alert(response.error || 'Błąd podczas archiwizowania kwartału');
+                }
+            } catch (error) {
+                console.error('Błąd podczas archiwizowania kwartału:', error);
+                alert('Błąd podczas archiwizowania kwartału');
+            }
+        }
+    };
+
     const handleRefreshMatchList = React.useCallback((shouldRefresh: boolean) => {
         setShouldRefreshMatchList(shouldRefresh);
     }, []);
@@ -97,11 +127,16 @@ const HomePage: React.FC = () => {
                         <Button label={'Zaloguj się'} onClick={() => toggleLoginModal(true)} />
                     )}
                     {isAuthenticated && <Button label={'Dodaj mecz'} onClick={() => toggleAddMatchModal(true)} />}
-                    {isAuthenticated && role === Role.ADMIN && (
+                    {isAuthenticated && (role === Role.ADMIN || role === Role.UBER_ADMIN) && (
+                        <Button label={'Zarchiwizuj kwartał'} onClick={() => archiveQuarterData()} />
+                    )}
+                    {isAuthenticated && role === Role.UBER_ADMIN && (
                         <Button label={'Wyczyść wyniki tabeli'} onClick={() => resetTable()} />
                     )}
                 </div>
-                {isAuthenticated && role === Role.ADMIN && <AddTeam onTeamAdded={loadTeams} />}
+                {isAuthenticated && (role === Role.ADMIN || role === Role.UBER_ADMIN) && (
+                    <AddTeam onTeamAdded={loadTeams} />
+                )}
             </header>
 
             <main>

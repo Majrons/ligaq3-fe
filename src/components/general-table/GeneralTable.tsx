@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { Match } from '@/components/matches/match-list/MatchList';
 
-interface Team {
+export interface Team {
     _id: string;
     name: string;
     losses: number;
@@ -26,9 +26,10 @@ interface IGeneralTableProps {
     teams: Team[];
     matches: Match[];
     gameType?: string;
+    isArchivePage?: boolean;
 }
 
-const GeneralTable: React.FC<IGeneralTableProps> = ({ teams, matches, gameType }) => {
+const GeneralTable: React.FC<IGeneralTableProps> = ({ teams, matches, gameType, isArchivePage }) => {
     const navigate = useNavigate();
 
     // Filtruj mecze na podstawie typu gry, jeśli jest podany
@@ -100,6 +101,8 @@ const GeneralTable: React.FC<IGeneralTableProps> = ({ teams, matches, gameType }
         },
     }));
 
+    const handleNavigateToTeamPage = (team: Team) => () => navigate(`/team/${team._id}`);
+
     return (
         <div className={styles.resultTable}>
             <TableContainer component={Paper}>
@@ -123,11 +126,11 @@ const GeneralTable: React.FC<IGeneralTableProps> = ({ teams, matches, gameType }
                                 <StyledTableCell
                                     component="th"
                                     scope="row"
-                                    onClick={() => navigate(`/team/${team._id}`)}
+                                    onClick={isArchivePage ? () => {} : handleNavigateToTeamPage(team)}
                                     style={{
-                                        cursor: 'pointer',
+                                        cursor: isArchivePage ? 'default' : 'pointer',
                                         color: 'white',
-                                        textDecoration: 'underline',
+                                        textDecoration: isArchivePage ? 'none' : 'underline',
                                         fontWeight: 'bold',
                                     }}>
                                     {team.name}

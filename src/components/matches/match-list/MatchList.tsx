@@ -234,7 +234,7 @@ const MatchList: React.FC<MatchListProps> = ({
                                     </div>
                                 </div>
                             </div>
-                            {isAuthenticated && role === Role.ADMIN && (
+                            {isAuthenticated && (role === Role.ADMIN || role === Role.UBER_ADMIN) && (
                                 <div className={styles.containerListItemButtons}>
                                     <Button
                                         classes={styles.containerListItemButtonsBtn}

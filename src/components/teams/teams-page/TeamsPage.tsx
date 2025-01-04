@@ -20,7 +20,11 @@ interface ITeamDetails extends ITeamsProps {
     players: Player[];
 }
 
-const TeamsPage: React.FC = () => {
+interface ITeamsPageProps {
+    teamsArray?: ITeamDetails[];
+}
+
+const TeamsPage: React.FC<ITeamsPageProps> = ({ teamsArray }) => {
     const [teams, setTeams] = useState<ITeamDetails[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -53,7 +57,7 @@ const TeamsPage: React.FC = () => {
             }
         };
 
-        fetchTeamsWithDetails();
+        teamsArray ? setTeams(teamsArray) : fetchTeamsWithDetails();
     }, []);
 
     return (

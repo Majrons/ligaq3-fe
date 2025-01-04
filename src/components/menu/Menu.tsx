@@ -13,6 +13,12 @@ const Menu: React.FC = () => {
                 <li>
                     <Link to="/teams">Teams</Link>
                 </li>
+                <li>
+                    <Link to="/archive">Archiwum Kwartałów</Link>
+                </li>
+                <li>
+                    <Link to="/regulamin">Regulamin</Link>
+                </li>
             </ul>
         </nav>
     );
