@@ -4,6 +4,7 @@ import GeneralTable from '../general-table/GeneralTable';
 import { getArchivedQuarters, getArchivedQuarterData } from '../../api/api-archive';
 import styles from './ArchivedQuarterPage.module.scss';
 import TeamsPage from '../teams/teams-page/TeamsPage';
+import MatchList from '../matches/match-list/MatchList';
 
 const ArchivedQuarterPage: React.FC = () => {
     const [quarters, setQuarters] = useState<string[]>([]);
@@ -74,6 +75,17 @@ const ArchivedQuarterPage: React.FC = () => {
                         </div>
                     </>
                     <TeamsPage teamsArray={teams} />
+                    <MatchList
+                        archivedMatches={matches}
+                        archivedTeams={teams}
+                        handleRefreshMatchList={() => false}
+                        shouldRefreshMatchList={false}
+                        isArchivePage={true}
+                        role={'mod'}
+                        isModalOpen={false}
+                        isAuthenticated={false}
+                        toggleModal={() => false}
+                    />
                 </>
             )}
         </div>

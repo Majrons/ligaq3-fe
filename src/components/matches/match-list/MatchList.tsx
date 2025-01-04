@@ -36,6 +36,9 @@ interface MatchListProps {
     shouldRefreshMatchList: boolean;
     toggleModal(modalState: boolean): void;
     handleRefreshMatchList(shouldRefresh: boolean): void;
+    archivedMatches?: Match[];
+    archivedTeams?: Team[];
+    isArchivePage?: boolean;
 }
 
 const MatchList: React.FC<MatchListProps> = ({
@@ -45,6 +48,9 @@ const MatchList: React.FC<MatchListProps> = ({
     role,
     shouldRefreshMatchList,
     handleRefreshMatchList,
+    archivedMatches,
+    archivedTeams,
+    isArchivePage,
 }) => {
     const [matches, setMatches] = useState<Match[]>([]);
     const [filteredMatches, setFilteredMatches] = useState<Match[]>([]);
@@ -75,16 +81,21 @@ const MatchList: React.FC<MatchListProps> = ({
     };
 
     useEffect(() => {
-        fetchMatches();
-        fetchTeamsList();
-    }, []);
+        const setArchivedMatches = (archivedMatches: Match[]) => {
+            setMatches(archivedMatches);
+            setFilteredMatches(archivedMatches);
+        };
+
+        archivedMatches ? setArchivedMatches(archivedMatches) : fetchMatches();
+        archivedTeams ? setTeams(archivedTeams) : fetchTeamsList();
+    }, [archivedMatches, archivedTeams]);
 
     useEffect(() => {
-        if (shouldRefreshMatchList) {
+        if (shouldRefreshMatchList && !isArchivePage) {
             fetchMatches();
             handleRefreshMatchList(false);
         }
-    }, [shouldRefreshMatchList, handleRefreshMatchList]);
+    }, [shouldRefreshMatchList, handleRefreshMatchList, isArchivePage]);
 
     const filterMatchesByTeam = (teamId: string | null) => {
         setActiveFilter(teamId);
@@ -234,7 +245,7 @@ const MatchList: React.FC<MatchListProps> = ({
                                     </div>
                                 </div>
                             </div>
-                            {isAuthenticated && (role === Role.ADMIN || role === Role.UBER_ADMIN) && (
+                            {isAuthenticated && (role === Role.ADMIN || role === Role.UBER_ADMIN) && !isArchivePage && (
                                 <div className={styles.containerListItemButtons}>
                                     <Button
                                         classes={styles.containerListItemButtonsBtn}
