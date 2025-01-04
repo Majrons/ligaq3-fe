@@ -137,7 +137,7 @@ const TeamPage: React.FC = () => {
                 </>
             ) : (
                 isLoggedIn &&
-                role === Role.ADMIN && (
+                (role === Role.ADMIN || role === Role.UBER_ADMIN) && (
                     <div className={styles.containerButtons}>
                         <Button label={'Edytuj nazwę'} onClick={handleEditTeamName} />
                         <Button label={'Usuń drużynę'} onClick={handleDeleteTeam} />
@@ -150,11 +150,11 @@ const TeamPage: React.FC = () => {
                 {players.map(player => (
                     <li
                         className={classnames(styles.containerPlayersListItem, {
-                            [styles.containerPlayersListItemAdmin]: role === Role.ADMIN,
+                            [styles.containerPlayersListItemAdmin]: role === Role.ADMIN || role === Role.UBER_ADMIN,
                         })}
                         key={player._id}>
                         {player.name}
-                        {isLoggedIn && role === Role.ADMIN && (
+                        {isLoggedIn && (role === Role.ADMIN || role === Role.UBER_ADMIN) && (
                             <Button
                                 classes={styles.containerPlayersListItemBtn}
                                 label={'Usuń'}
@@ -165,7 +165,7 @@ const TeamPage: React.FC = () => {
                 ))}
             </ul>
 
-            {isLoggedIn && role === Role.ADMIN && (
+            {isLoggedIn && (role === Role.ADMIN || role === Role.UBER_ADMIN) && (
                 <>
                     <Button
                         label={showAddPlayerForm ? 'Anuluj' : 'Dodaj gracza'}

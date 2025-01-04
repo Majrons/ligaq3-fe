@@ -8,8 +8,8 @@ export const fetchTeam = async (teamId: string) => {
 
 export const fetchTeams = async () => {
     try {
-        const response = await axiosInstance.get('/teams'); // Wysłanie zapytania GET do API
-        return response.data; // Zwrócenie danych o drużynach
+        const response = await axiosInstance.get('/teams');
+        return response.data;
     } catch (error) {
         console.error('Błąd pobierania drużyn:', error);
         throw error;

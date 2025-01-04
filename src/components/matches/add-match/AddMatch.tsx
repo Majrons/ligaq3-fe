@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import styles from './AddMatch.module.scss';
 import ModalComponent from '../../modal/ModalComponent';
 import { fetchPlayersByTeam } from '../../../api/api-players';
@@ -14,7 +14,7 @@ interface IAddMatchProps {
     refreshMatchList(shouldRefresh: boolean): void;
 }
 
-interface Team {
+export interface Team {
     _id: string;
     name: string;
 }
@@ -109,6 +109,11 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
             return;
         }
 
+        if (homeScore === awayScore) {
+            alert('Wynik meczu nie może być remisowy (np. 0:0, 1:1, lub 2:2)');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('homeTeam', homeTeam);
         formData.append('awayTeam', awayTeam);
@@ -134,6 +139,18 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
     const handleCancel = () => {
         clearForm();
         toggleModal(false);
+    };
+
+    const handleScoreChange = (setter: Dispatch<SetStateAction<string | number>>, value: string) => {
+        const numericValue = Number(value);
+
+        if (value === '' || (numericValue >= 0 && numericValue <= 2)) {
+            setter(value === '' ? 0 : numericValue);
+        }
+
+        if (numericValue > 2) {
+            setter(2);
+        }
     };
 
     const handlePlayerSelection = (team: string, playerName: string, selected: boolean) => {
@@ -213,13 +230,12 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                                 label={'Wynik'}
                                 onFocus={() => setHomeScore('')}
                                 onBlur={() => setHomeScore(homeScore === '' ? 0 : homeScore)}
-                                onChange={e => {
-                                    const value = e.target.value;
-                                    if (!isNaN(Number(value))) {
-                                        setHomeScore(value === '' ? '' : Number(value));
-                                    }
-                                }}
+                                onChange={e => handleScoreChange(setHomeScore, e.target.value)}
                                 value={homeScore}
+                                inputProps={{
+                                    min: 0,
+                                    max: 2,
+                                }}
                                 required
                             />
                         </ThemeProvider>
@@ -235,13 +251,12 @@ const AddMatch: React.FC<IAddMatchProps> = ({ isModalOpen, toggleModal, refreshM
                                 label={'Wynik'}
                                 onFocus={() => setAwayScore('')}
                                 onBlur={() => setAwayScore(awayScore === '' ? 0 : awayScore)}
-                                onChange={e => {
-                                    const value = e.target.value;
-                                    if (!isNaN(Number(value))) {
-                                        setAwayScore(value === '' ? '' : Number(value));
-                                    }
-                                }}
+                                onChange={e => handleScoreChange(setAwayScore, e.target.value)}
                                 value={awayScore}
+                                inputProps={{
+                                    min: 0,
+                                    max: 2,
+                                }}
                                 required
                             />
                         </ThemeProvider>

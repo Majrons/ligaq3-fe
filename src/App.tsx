@@ -8,6 +8,8 @@ import TeamPage from '../src/components/teams/team-page/TeamPage';
 import classnames from 'classnames';
 import Menu from '../src/components/menu/Menu';
 import TeamsPage from './components/teams/teams-page/TeamsPage';
+import ArchivePage from './components/quarters/ArchivePage';
+import Regulations from './components/regulations/Regulations';
 
 const App: React.FC = () => {
     const checkTokenExpiration = () => {
@@ -39,6 +41,8 @@ const App: React.FC = () => {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/team/:teamId" element={<TeamPage />} />
                     <Route path="/teams" element={<TeamsPage />} />
+                    <Route path="/archive" element={<ArchivePage />} />
+                    <Route path="/regulamin" element={<Regulations />} />
                 </Routes>
             </Router>
         </div>
