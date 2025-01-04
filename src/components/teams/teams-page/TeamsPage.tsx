@@ -58,7 +58,7 @@ const TeamsPage: React.FC<ITeamsPageProps> = ({ teamsArray }) => {
         };
 
         teamsArray ? setTeams(teamsArray) : fetchTeamsWithDetails();
-    }, []);
+    }, [teamsArray]);
 
     return (
         <div className={styles.container}>
