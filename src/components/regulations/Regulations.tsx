@@ -20,7 +20,13 @@ const Regulations: React.FC = () => {
         industrialrevolution: 'industrialrevolution',
     };
 
-    const imagePreviewRef = React.useRef<HTMLDivElement | null>(null); // Referencja do elementu podglądu obrazu
+    const imagePreviewRef = React.useRef<HTMLDivElement | null>(null);
+
+    const handleBlur = () => {
+        if (imagePreviewRef.current) {
+            imagePreviewRef.current.style.display = 'none';
+        }
+    };
 
     React.useEffect(() => {
         const cells = document.querySelectorAll<HTMLTableCellElement>('td[data-img]');
@@ -48,6 +54,15 @@ const Regulations: React.FC = () => {
             }
         };
 
+        const handleMobileMouseMove = () => {
+            if (imagePreviewRef.current) {
+                const offsetX = 25;
+                const offsetY = 2400;
+                imagePreviewRef.current.style.left = `${offsetX}px`;
+                imagePreviewRef.current.style.top = `${offsetY}px`;
+            }
+        };
+
         const handleClick = (cell: HTMLTableCellElement) => {
             const imgUrl = cell.getAttribute('data-img');
             if (imagePreviewRef.current && imgUrl) {
@@ -59,6 +74,7 @@ const Regulations: React.FC = () => {
         if (isMobileView) {
             cells.forEach(cell => {
                 cell.addEventListener('click', () => handleClick(cell));
+                cell.addEventListener('mousemove', handleMobileMouseMove);
             });
         } else {
             cells.forEach(cell => {
@@ -118,7 +134,7 @@ const Regulations: React.FC = () => {
                 kolejnego eliminowania map aż zostanie się jedna na której odbędzie się rywalizacja. Jako pierwsza mapę
                 odrzuca drużyna, która wygrała drugą mapę.
             </p>
-            <div className={styles.containerTable}>
+            <div className={styles.containerTable} tabIndex={-1} onBlur={handleBlur}>
                 <table border={1}>
                     <tbody>
                         <tr>
