@@ -4,7 +4,7 @@ import { useIsMobileView } from '../hooks/useIsInMobileView';
 
 const Regulations: React.FC = () => {
     const isMobileView = useIsMobileView();
-    const imagePath = (mapName: string) => `http://starekarabiny.pl/static/maps/levelshots/${mapName}.jpg`;
+    const imagePath = (mapName: string) => `https://liga-q3.pl/mapy/${mapName}.jpg`;
     const map = {
         dividedcrossings: 'dividedcrossings',
         divineintermission: 'divineintermission',
