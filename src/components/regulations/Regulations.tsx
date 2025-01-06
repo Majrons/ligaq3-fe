@@ -57,7 +57,7 @@ const Regulations: React.FC = () => {
         const handleMobileMouseMove = () => {
             if (imagePreviewRef.current) {
                 const offsetX = 25;
-                const offsetY = 2400;
+                const offsetY = 2250;
                 imagePreviewRef.current.style.left = `${offsetX}px`;
                 imagePreviewRef.current.style.top = `${offsetY}px`;
             }
