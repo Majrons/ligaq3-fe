@@ -21,6 +21,7 @@ const Regulations: React.FC = () => {
     };
 
     const imagePreviewRef = React.useRef<HTMLDivElement | null>(null);
+    const tableRefObject = React.useRef<HTMLDivElement | null>(null);
 
     const handleBlur = () => {
         if (imagePreviewRef.current) {
@@ -55,11 +56,11 @@ const Regulations: React.FC = () => {
         };
 
         const handleMobileMouseMove = () => {
-            if (imagePreviewRef.current) {
+            if (imagePreviewRef.current && tableRefObject.current) {
                 const offsetX = 25;
-                const offsetY = 2250;
+                const offsetY = 15;
                 imagePreviewRef.current.style.left = `${offsetX}px`;
-                imagePreviewRef.current.style.top = `${offsetY}px`;
+                imagePreviewRef.current.style.top = `${tableRefObject.current.offsetTop - imagePreviewRef.current.offsetHeight - offsetY}px`;
             }
         };
 
@@ -134,7 +135,7 @@ const Regulations: React.FC = () => {
                 kolejnego eliminowania map aż zostanie się jedna na której odbędzie się rywalizacja. Jako pierwsza mapę
                 odrzuca drużyna, która wygrała drugą mapę.
             </p>
-            <div className={styles.containerTable} tabIndex={-1} onBlur={handleBlur}>
+            <div ref={tableRefObject} className={styles.containerTable} tabIndex={-1} onBlur={handleBlur}>
                 <table border={1}>
                     <tbody>
                         <tr>
