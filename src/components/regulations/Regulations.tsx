@@ -133,8 +133,10 @@ const Regulations: React.FC = () => {
                 DOBÓR MAPY DOGRYWKOWEJ: <br />
                 Jeżeli nie możemy się dogadać co do mapy wspólnej wybieramy ją z przedstawionych poniżej na zasadzie
                 kolejnego eliminowania map aż zostanie się jedna na której odbędzie się rywalizacja. Jako pierwsza mapę
-                odrzuca drużyna, która wygrała drugą mapę.
-                <br />
+                odrzuca drużyna, która wygrała drugą mapę. Dopisek regulaminu TEAMOWEGO: Jab7kO gra w każdym meczu (sumą
+                głosów w tajnym głosowaniu) Tak mi dopomóż Panie Boże wszechmogący, w Trójcy jedyny i wszyscy święci!
+            </p>
+            <p className={styles.containerParagraph}>
                 Dopisek regulaminu TEAMOWEGO: Jab7kO gra w każdym meczu (sumą głosów w tajnym głosowaniu) Tak mi dopomóż
                 Panie Boże wszechmogący, w Trójcy jedyny i wszyscy święci!
             </p>
