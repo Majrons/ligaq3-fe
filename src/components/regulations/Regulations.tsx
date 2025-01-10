@@ -134,6 +134,9 @@ const Regulations: React.FC = () => {
                 Jeżeli nie możemy się dogadać co do mapy wspólnej wybieramy ją z przedstawionych poniżej na zasadzie
                 kolejnego eliminowania map aż zostanie się jedna na której odbędzie się rywalizacja. Jako pierwsza mapę
                 odrzuca drużyna, która wygrała drugą mapę.
+                <br />
+                Dopisek regulaminu TEAMOWEGO: Jab7kO gra w każdym meczu (sumą głosów w tajnym głosowaniu) Tak mi dopomóż
+                Panie Boże wszechmogący, w Trójcy jedyny i wszyscy święci!
             </p>
             <div ref={tableRefObject} className={styles.containerTable} tabIndex={-1} onBlur={handleBlur}>
                 <table border={1}>
