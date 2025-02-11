@@ -2,22 +2,22 @@
 @import './variables.scss';
 
 .grid {
-    max-width: $grid-max-width;
+    max-width: 115rem;
     margin-right: auto;
     margin-left: auto;
 
     @include bp(l-hd) {
-        max-width: $screen-hd;
+        max-width: 120rem;
     }
 }
 
 .grid {
     width: 100%;
-    padding-right: $gutter-width;
-    padding-left: $gutter-width;
+    padding-right: 1.875rem;
+    padding-left: 1.875rem;
 
     @include bp(xxxl) {
-        padding-right: clamp($gutter-width, 4vw, $container-gutter);
-        padding-left: clamp($gutter-width, 4vw, $container-gutter);
+        padding-right: clamp(1.875rem, 4vw, 10rem);
+        padding-left: clamp(1.875rem, 4vw, 10rem);
     }
 }

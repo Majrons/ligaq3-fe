@@ -1,9 +1,12 @@
 import React from 'react';
 import styles from './Regulations.module.scss';
 import { useIsMobileView } from '../hooks/useIsInMobileView';
+import classnames from 'classnames';
 
 const Regulations: React.FC = () => {
     const isMobileView = useIsMobileView();
+    const [language, setLanguage] = React.useState<'pl' | 'en'>('pl');
+
     const imagePath = (mapName: string) => `https://liga-q3.pl/mapy/${mapName}.jpg`;
     const map = {
         dividedcrossings: 'dividedcrossings',
@@ -94,57 +97,148 @@ const Regulations: React.FC = () => {
         };
     }, [isMobileView]);
 
+    const translations = {
+        pl: {
+            title: (
+                <>
+                    LIGA KWARTAŁÓW,
+                    <br /> EDYCJA DRUGA - REGULAMIN
+                </>
+            ),
+            generalRules: 'ZAPISY OGÓLNE:',
+            rulesList: [
+                'by mecz się wliczał gramy minimum 2v2; rywalizacje 1v1 nie będą kwalifikowane',
+                "by zwyciężyć w całym spotkaniu należy wygrać dwie mapy, które wybierają rywalizujące zespoły (zasada 'jedna nasza, jedna wasza'); w przypadku remisu rozgrywana jest dogrywka na odpowiedniej mapie (więcej o wyborze trzeciej mapy poniżej)",
+                'gramy albo iTDM albo iCTF',
+                'do ustalenia przed meczem, nie można mieszać trybów gry w jednym spotkaniu;',
+                'ustawienia serwera: iCTF timelimit 10, capturelimit 0; iTDM timelimit 10, fraglimit 0',
+                'wyłonienie zwycięzcy a zarazem koniec ligi 31.03.2025',
+            ],
+            scoreTableTitle: 'TABELA WYNIKÓW:',
+            scoreTableText: (
+                <>
+                    Punktacja w tabeli na zasadzie procentowego stosunku zwycięstw do rozegranych meczy.
+                    <br />
+                    <br />
+                    Przykład: <br />
+                    drużyna ma 8 meczy w tym 6 winów = 75%. Aby jednak drużyna w ogóle kwalifikowana była do tabeli musi
+                    mieć rozegranych minimum 70% średniej meczów przypadających na drużynę.
+                    <br />
+                    Przykład:
+                    <br />
+                    TEAM 01 - bilans 24-20 czyli 48 meczy / 55% winów <br />
+                    TEAM 02 - bilans 27-16 czyli 43 mecze / 63% winów <br />
+                    TEAM 03 - bilans 19-6 czyli 25 mecze / 76% winów <br />
+                    Wszystkich meczy 116, średnio 39 na drużynę, 70% z tego to 27.
+                    <br />
+                    Teoretycznie TEAM 03 powinien wygrać ligę, ale rozegrał zbyt mało spotkań by się kwalifikować.
+                </>
+            ),
+            overtimeMapSelectionTitle: 'DOBÓR MAPY DOGRYWKOWEJ:',
+            overtimeMapSelectionText:
+                'Jeżeli nie możemy się dogadać co do mapy wspólnej wybieramy ją z przedstawionych poniżej na zasadzie kolejnego eliminowania map aż zostanie się jedna na której odbędzie się rywalizacja. Jako pierwsza mapę odrzuca drużyna, która wygrała drugą mapę.',
+            ictfMapListTitle: 'LISTA MAP iCTF',
+            itdmMapListTitle: 'LISTA MAP iTDM',
+            itdmMapListText:
+                'zakres granych map jest tak wąski, że ciężko się nie dogadac o mapę wspólną skoro wszystkie drużyny znają ich zaledwie kilka',
+            committeeText: 'KOMISJA KONTROLI GIER I ZAKŁADÓW LICZBOWYCH, 06.01.2025',
+        },
+        en: {
+            title: (
+                <>
+                    QUARTERLEAGUE,
+                    <br /> SECOND EDITION - REGULATIONS
+                </>
+            ),
+            generalRules: 'GENERAL RULES:',
+            rulesList: [
+                'For a match to count, a minimum of 2v2 must be played; 1v1 competitions will not be eligible.',
+                "To win the entire match, you must win two maps, which are selected by the competing teams (rule: 'one of ours, one of yours'); in case of a tie, overtime is played on the appropriate map (more on selecting the third map below).",
+                'We play either iTDM or iCTF.',
+                'To be determined before the match; mixing game modes in a single match is not allowed.',
+                'Server settings: iCTF timelimit 10, capturelimit 0; iTDM timelimit 10, fraglimit 0.',
+                'Determining the winner, which also marks the end of the league: 31.03.2025.',
+            ],
+            scoreTableTitle: 'SCORE TABLE:',
+            scoreTableText: (
+                <>
+                    The table's scoring is based on the percentage ratio of wins to played matches.
+                    <br />
+                    <br />
+                    Example: <br />
+                    A team has played 8 matches, with 6 wins = 75%. However, in order for the team to be eligible for
+                    the table, it must have played at least 70% of the average matches allocated per team.
+                    <br />
+                    Example:
+                    <br />
+                    TEAM 01 - record 24-20, i.e. 48 matches / 55% wins <br />
+                    TEAM 02 - record 27-16, i.e. 43 matches / 63% wins <br />
+                    TEAM 03 - record 19-6, i.e. 25 matches / 76% wins <br />
+                    Total matches 116, an average of 39 per team, 70% of that is 27.
+                    <br />
+                    Theoretically, TEAM 03 should win the league, but it played too few matches to qualify.
+                </>
+            ),
+            overtimeMapSelectionTitle: 'OVERTIME MAP SELECTION:',
+            overtimeMapSelectionText:
+                'If we cannot agree on a shared map, we choose it from the list below by sequentially eliminating maps until only one remains on which the competition will take place. The team that won the second map eliminates the first map.',
+            ictfMapListTitle: 'iCTF MAP LIST',
+            itdmMapListTitle: 'iTDM MAP LIST',
+            itdmMapListText:
+                "The range of maps played is so narrow that it's hard not to agree on a shared map, since all teams are familiar with only a few.",
+            committeeText: 'GAMES AND LOTTERY REGULATION COMMITTEE, 06.01.2025',
+        },
+    };
+
     return (
         <div className={styles.container}>
-            <h2>
-                LIGA KWARTAŁÓW,
-                <br /> EDYCJA DRUGA - REGULAMIN
-            </h2>
+            <div className={styles.languageToggle}>
+                <button
+                    className={classnames(styles.languageToggleButton, {
+                        [styles.active]: language === 'pl',
+                    })}
+                    onClick={() => setLanguage('pl')}>
+                    Polski
+                </button>
+                <button
+                    className={classnames(styles.languageToggleButton, {
+                        [styles.active]: language === 'en',
+                    })}
+                    onClick={() => setLanguage('en')}>
+                    English
+                </button>
+            </div>
+
+            <h2>{translations[language].title}</h2>
+
             <p className={styles.containerParagraph}>
-                ZAPISY OGÓLNE:
+                {translations[language].generalRules}
                 <ul>
-                    <li>by mecz się wliczał gramy minimum 2v2; rywalizacje 1v1 nie będą kwalifikowane</li>
-                    <li>
-                        by zwyciężyć w całym spotkaniu należy wygrać dwie mapy, które wybierają rywalizujące
-                        zespoły(zasada "jedna nasza, jedna wasza"); w przypadku remisu rozgrywana jest dogrywka na
-                        odpowiedniej mapie(więcej o wyborze trzeciej mapy poniżej){' '}
-                    </li>
-                    <li>gramy albo iTDM albo iCTF</li>
-                    <li>do ustalenia przed meczem, nie można mieszać trybów gry w jednym spotkaniu;</li>
-                    <li>ustawienia serwera: iCTF timelimit 10, capturelimit 0; iTDM timelimit 10, fraglimit 0</li>
-                    <li>wyłonienie zwycięzcy a zarazem koniec ligi 31.03.2025</li>
+                    {translations[language].rulesList.map((rule, index) => (
+                        <li key={index}>{rule}</li>
+                    ))}
                 </ul>
             </p>
+
             <p className={styles.containerParagraph}>
-                TABELA WYNIKÓW: <br />
-                <br /> Punktacja w tabeli na zasadzie procentowego stosunku zwycięstw do rozegranych meczy.
-                <br /> Przykład: <br />
-                drużyna ma 8 meczy w tym 6 winów = 75%. Aby jednak drużyna w ogóle kwalifikowana była do tabeli musi
-                mieć rozegranych minimum 70% średniej meczów przypadających na drużynę. <br />
-                Przykład:
+                {translations[language].scoreTableTitle}
                 <br />
-                TEAM 01 - bilans 24-20 czyli 48 meczy / 55% winów <br />
-                TEAM 02 - bilans 27-16 czyli 43 mecze / 63% winów <br />
-                TEAM 03 - bilans 19-6 czyli 25 mecze / 76% winów <br />
-                Wszystkich meczy 116, średnio 39 na drużynę, 70% z tego to 27. <br />
-                Teoretycznie TEAM 03 powinien wygrać ligę, ale rozegrał zbyt mało spotkań by się kwalifikować.
+                <br />
+                {translations[language].scoreTableText}
             </p>
+
             <p className={styles.containerParagraph}>
-                DOBÓR MAPY DOGRYWKOWEJ: <br />
-                Jeżeli nie możemy się dogadać co do mapy wspólnej wybieramy ją z przedstawionych poniżej na zasadzie
-                kolejnego eliminowania map aż zostanie się jedna na której odbędzie się rywalizacja. Jako pierwsza mapę
-                odrzuca drużyna, która wygrała drugą mapę.
+                {translations[language].overtimeMapSelectionTitle}
+                <br />
+                {translations[language].overtimeMapSelectionText}
             </p>
-            <p className={styles.containerParagraph}>
-                Dopisek regulaminu TEAMOWEGO: Jab7kO gra w każdym meczu (sumą głosów w tajnym głosowaniu) Tak mi dopomóż
-                Panie Boże wszechmogący, w Trójcy jedyny i wszyscy święci!
-            </p>
+
             <div ref={tableRefObject} className={styles.containerTable} tabIndex={-1} onBlur={handleBlur}>
                 <table border={1}>
                     <tbody>
                         <tr>
                             <td colSpan={4} className={styles.containerRowCollapsed}>
-                                LISTA MAP iCTF
+                                {translations[language].ictfMapListTitle}
                             </td>
                         </tr>
                         <tr className={styles.containerTableHeader}>
@@ -185,19 +279,20 @@ const Regulations: React.FC = () => {
                         </tr>
                         <tr>
                             <td colSpan={4} className={styles.containerRowCollapsed}>
-                                LISTA MAP iTDM
+                                {translations[language].itdmMapListTitle}
                             </td>
                         </tr>
                         <tr>
                             <td colSpan={4} className={styles.containerItdmList}>
-                                zakres granych map jest tak wąski, że ciężko się nie dogadac o mapę wspólną skoro
-                                wszystkie drużyny znają ich zaledwie kilka
+                                {translations[language].itdmMapListText}
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <p className={styles.containerInfo}>KOMISJA KONTROLI GIER I ZAKŁADÓW LICZBOWYCH, 06.01.2025</p>
+
+            <p className={styles.containerInfo}>{translations[language].committeeText}</p>
+
             <div ref={imagePreviewRef} className={styles.containerImagePreview} id="image-preview"></div>
         </div>
     );
